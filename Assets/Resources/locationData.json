@@ -367,7 +367,39 @@
       "latitude": -37.91265510957941,
       "longitude": 145.13246043564203,
       "zLevel": 9
-    }
+    },
+    {
+      "ID": 46,
+      "Name": "Monash College - Placeholder 1",
+      "FileName": "monash_college_placeholder_01",
+      "latitude": -37.91500,
+      "longitude": 145.13400,
+      "zLevel": 1
+    },
+    {
+      "ID": 47,
+      "Name": "Monash College - Placeholder 2",
+      "FileName": "monash_college_placeholder_02",
+      "latitude": -37.91510,
+      "longitude": 145.13410,
+      "zLevel": 1
+    },
+    {
+      "ID": 48,
+      "Name": "Monash College - Placeholder 3",
+      "FileName": "monash_college_placeholder_03",
+      "latitude": -37.91520,
+      "longitude": 145.13420,
+      "zLevel": 1
+    },
+    {
+      "ID": 49,
+      "Name": "Monash College - Placeholder 4",
+      "FileName": "monash_college_placeholder_04",
+      "latitude": -37.91530,
+      "longitude": 145.13430,
+      "zLevel": 1
+    }    
   ],
 
   "MapPacks": [
@@ -393,6 +425,12 @@
       "Name": "Outside Living",
       "locationIDs": [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14],
       "bucketSubdirectory": "outside-living"
-    }
+    },
+    {
+      "ID": 4,
+      "Name": "Monash College",
+      "locationIDs": [46, 47, 48, 49],
+      "bucketSubdirectory": "monash-college"
+    }    
   ]
 }
