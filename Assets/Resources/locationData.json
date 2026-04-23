@@ -423,7 +423,7 @@
     {
       "ID": 3,
       "Name": "Outside Living",
-      "locationIDs": [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+      "locationIDs": [1, 2, 3, 4, 6, 7],
       "bucketSubdirectory": "outside-living"
     },
     {

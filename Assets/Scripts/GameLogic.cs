@@ -161,19 +161,19 @@ public class GameLogic : MonoBehaviour
             LogError("LocationManager not assigned and could not be found in scene!");
         }
 
-        // Check current scene and hide map if we're in MenuScene
+        // Check current scene and hide map if we're in MenuScene_MonashClayton
         Scene currentScene = SceneManager.GetActiveScene();
-        if (currentScene.name == "MenuScene")
+        if (currentScene.name == "MenuScene_MonashClayton")
         {
             if (MapInteractionManager.Instance != null)
             {
                 MapInteractionManager.Instance.HideMap();
             }
-            LogDebug("Started in MenuScene - Map hidden");
+            LogDebug("Started in MenuScene_MonashClayton - Map hidden");
         }
 
-        // Initialize game (only if not in MenuScene)
-        if (currentScene.name != "MenuScene")
+        // Initialize game (only if not in MenuScene_MonashClayton)
+        if (currentScene.name != "MenuScene_MonashClayton")
         {
             InitializeGame();
         }
@@ -254,7 +254,7 @@ public class GameLogic : MonoBehaviour
         LogDebug("Returning to menu - game state reset");
         
         // Load menu scene
-        SceneManager.LoadScene("MenuScene");
+        SceneManager.LoadScene("MenuScene_MonashClayton");
     }
 
     /// <summary>
@@ -264,14 +264,14 @@ public class GameLogic : MonoBehaviour
     {
         Debug.Log("Scene loaded: " + scene.name);
 
-        // Hide map when MenuScene is loaded
-        if (scene.name == "MenuScene")
+        // Hide map when MenuScene_MonashClayton is loaded
+        if (scene.name == "MenuScene_MonashClayton")
         {
             if (MapInteractionManager.Instance != null)
             {
                 MapInteractionManager.Instance.HideMap();
             }
-            LogDebug("MenuScene loaded - Minimap UI hidden");
+            LogDebug("MenuScene_MonashClayton loaded - Minimap UI hidden");
         }
         // Show map and initialize game when GameScene is loaded
         else if (scene.name == "GameScene")
