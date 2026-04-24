@@ -228,10 +228,11 @@ public class GameLogic : MonoBehaviour
 
     /// <summary>
     /// Loads the game scene from main menu
+    /// Modified by salma
     /// </summary>
     public void LoadGame()
     {
-        SceneManager.LoadScene("GameScene");
+        CoroutineRunner.Instance.StartCoroutine(SceneLoader.LoadSceneAsync(Constants.Scenes.GAME)); 
     }
 
     /// <summary> Loads the main menu scene </summary>
