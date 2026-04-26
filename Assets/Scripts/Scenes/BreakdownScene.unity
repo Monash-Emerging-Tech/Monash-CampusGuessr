@@ -573,7 +573,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9024428339752051845, guid: 68bea656fb570f243abd1452b4e4f44e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LoadMenu
+      value: LoadMapSelection
       objectReference: {fileID: 0}
     - target: {fileID: 9024428339752051845, guid: 68bea656fb570f243abd1452b4e4f44e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
