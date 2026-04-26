@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scripts/Scenes/Map_selection.unity
     guid: ef178a697ca544984a9ac742c7555c6d
   - enabled: 1
+    path: Assets/Scripts/Scenes/MenuScene_MonashCollege.unity
+    guid: ebc03c7b87aaaa04ab0207b204367eda
+  - enabled: 1
     path: Assets/Scripts/Scenes/MenuScene_MonashClayton.unity
     guid: 9593ecc3b5bd82a4d837b5c155538402
   - enabled: 1

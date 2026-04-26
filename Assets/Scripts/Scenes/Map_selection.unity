@@ -2732,6 +2732,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1623124586}
   - component: {fileID: 1623124585}
+  - component: {fileID: 1623124588}
+  - component: {fileID: 1623124587}
   m_Layer: 0
   m_Name: Your paragraph text (2)
   m_TagString: Untagged
@@ -2809,6 +2811,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 227.992}
+--- !u!114 &1623124587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623124584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24472bf6fbda2584faf442d8b5a1b629, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetScene: MenuScene_MonashCollege
+--- !u!65 &1623124588
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623124584}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 60.00001, y: 33.75001, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1722176085
 GameObject:
   m_ObjectHideFlags: 0
