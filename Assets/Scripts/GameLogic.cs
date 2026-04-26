@@ -234,8 +234,8 @@ public class GameLogic : MonoBehaviour
         SceneManager.LoadScene("GameScene");
     }
 
-    /// <summary> Loads the main menu scene </summary>
-    public void LoadMenu()
+    /// <summary> Loads the starting map selection scene </summary>
+    public void LoadMapSelection()
     {
         // Reset game state
         isGameActive = false;
@@ -254,7 +254,7 @@ public class GameLogic : MonoBehaviour
         LogDebug("Returning to menu - game state reset");
         
         // Load menu scene
-        SceneManager.LoadScene("MenuScene_MonashClayton");
+        SceneManager.LoadScene("Map_selection");
     }
 
     /// <summary>
