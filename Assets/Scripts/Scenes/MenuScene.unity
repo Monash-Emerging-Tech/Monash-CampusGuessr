@@ -16004,7 +16004,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: b39ae3316ff9c414aac57f600db77404, type: 2}
     - target: {fileID: 487263644213522047, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
       propertyPath: mapPackName
-      value: all
+      value: Outside Living
       objectReference: {fileID: 0}
     - target: {fileID: 2956644974186284610, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
       propertyPath: m_Name
