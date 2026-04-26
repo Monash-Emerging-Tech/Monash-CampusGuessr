@@ -171,7 +171,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>MNET Geoguessr + Monash MazeMaps</h1>
+        <h1>MNET CampusGuessr + Monash MazeMaps</h1>
         <p>
           {!hasGuessed 
             ? "Click on the map to place your guess, then click 'Submit Guess' to see the actual location!" 

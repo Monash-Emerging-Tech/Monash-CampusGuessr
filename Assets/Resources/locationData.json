@@ -11,7 +11,7 @@
     {
       "ID": 1,
       "Name": "Campus Centre North, Floor 1 Outside",
-      "FileName": "360_OL_CC_N_1_O",
+      "FileName": "360_OutsideLiving_CC_N_1_Outside",
       "latitude": -37.91158,
       "longitude": 145.13276,
       "zLevel": 2
@@ -19,7 +19,7 @@
     {
       "ID": 2,
       "Name": "Hargrave-Andrew Library Outside",
-      "FileName": "360_OL_HAL_Outside",
+      "FileName": "360_OutsideLiving_HLib_Outside",
       "latitude": -37.910039,
       "longitude": 145.132195,
       "zLevel": 1
@@ -27,7 +27,7 @@
     {
       "ID": 3,
       "Name": "Hump Lawn Chairs",
-      "FileName": "360_OL_HumpLawnChairs",
+      "FileName": "360_OutsideLiving_HumpLawnChairs",
       "latitude": -37.910958,
       "longitude": 145.132319,
       "zLevel": 1
@@ -35,7 +35,7 @@
     {
       "ID": 4,
       "Name": "Joe's Pizzeria'",
-      "FileName": "360_OL_JoePizza",
+      "FileName": "360_OutsideLiving_JoePizza",
       "latitude": -37.911653,
       "longitude": 145.135821,
       "zLevel": 1
@@ -43,7 +43,7 @@
     {
       "ID": 5,
       "Name": "Monash 101 - Building 94 Lecture Stairs",
-      "FileName": "360_Monash101_Woodside_Lecture_Stairs",
+      "FileName": "360_Monash101_WoodsideLectureStairs",
       "latitude": -37.910022,
       "longitude": 145.135268,
       "zLevel": 1
@@ -51,7 +51,7 @@
     {
       "ID": 6,
       "Name": "Campus Park East",
-      "FileName": "360_OL_CampusParkEast",
+      "FileName": "360_OutsideLiving_CampusParkEast",
       "latitude": -37.910556,
       "longitude": 145.136202,
       "zLevel": 1
@@ -59,7 +59,7 @@
     {
       "ID": 7,
       "Name": "Campus Centre North, Ground Floor Outside",
-      "FileName": "360_OL_CC_N_G_O",
+      "FileName": "360_OutsideLiving_CC_N_G_Outside",
       "latitude": -37.911494,
       "longitude": 145.132844,
       "zLevel": 1
@@ -113,294 +113,261 @@
       "zLevel": 1
     },
     {
-        "ID": 14,
-        "Name": "Weeping Women Fountains (SANNÉ MESTROM) Campus Park",
-        "FileName": "360_OL_ThatFountain",
-        "latitude": -37.910438,
-        "longitude": 145.136249,
-        "zLevel": 1
+      "ID": 14,
+      "Name": "Weeping Women Fountains (SANNÉ MESTROM) Campus Park",
+      "FileName": "360_OL_ThatFountain",
+      "latitude": -37.910438,
+      "longitude": 145.136249,
+      "zLevel": 1
     },
     {
-        "ID": 15,
-        "Name": "Monash Smart Manufacturing Lab, Engineering 60",
-        "FileName": "360_MSMLab",
-        "latitude": -37.90970414259322,
-        "longitude": 145.13427507806313
-,
-        "zLevel": 1
-    }, 
-    {
-        "ID": 16,
-        "Name": "Wholefoods Campus Centre",
-        "FileName": "360_Wholefoods",
-        "latitude": -37.91177761378923,
-        "longitude": 145.13334954189412,
-        "zLevel": 2
-    },{
-        "ID": 17,
-        "Name": "LTB_G81",
-        "FileName": "360_LTB_G81",
-        "latitude": -37.913857943837506,
-        "longitude": 145.13228375038608,
-        "zLevel": 1
+      "ID": 15,
+      "Name": "Monash Smart Manufacturing Lab, Engineering 60",
+      "FileName": "360_MSMLab",
+      "latitude": -37.90970414259322,
+      "longitude": 145.13427507806313,
+      "zLevel": 1
     },
     {
-        "ID": 18,
-        "Name": "MenziesGroundFloor",
-        "FileName": "360_MenziesGroundFloor",
-        "latitude": -37.91270903845613,
-        "longitude": 145.13251189854333,
-        "zLevel": 1
-    },
-      {
-        "ID": 19,
-        "Name": "C1Theatre",
-        "FileName": "360_C1Theatre",
-        "latitude": -37.91105696020817,
-        "longitude": 145.13405065007504,
-        "zLevel": 1
-    }
-    ,
-      {
-        "ID": 20,
-        "Name": "LTB_G81_Corner",
-        "FileName": "360_LTB_G81_Corner",
-        "latitude": -37.91369263128193,
-        "longitude": 145.13234996381397,
-        "zLevel": 1
+      "ID": 16,
+      "Name": "Wholefoods Campus Centre",
+      "FileName": "360_Wholefoods",
+      "latitude": -37.91177761378923,
+      "longitude": 145.13334954189412,
+      "zLevel": 2
     },
     {
-        "ID": 21,
-        "Name": "Airport Lounge",
-        "FileName": "360_AirportLounge",
-        "latitude": -37.911892918417834,
-        "longitude": 145.13281139226973,
-        "zLevel": 2
-    },
-        {
-        "ID": 22,
-        "Name": "LG_14 Design and tech building",
-        "FileName": "360_DT_LG_14",
-        "latitude": -37.90985687032333,
-        "longitude": 145.1350765887716
-,
-        "zLevel": -1
-    }
-    ,
-        {
-        "ID": 23,
-        "Name": "L1_Menzies",
-        "FileName": "360_L1_Menzies",
-        "latitude": -37.91265304613119,
-        "longitude": 145.13264312657208,
-        "zLevel": 2
-    }
-    ,
-        {
-        "ID": 24,
-        "Name": "Eng Makerspace",
-        "FileName": "360_Eng_Makerspace",
-        "latitude": -37.909854202716005,
-        "longitude":145.13443414482776 ,
-        "zLevel": 1
-    }
-        ,
-        {
-        "ID": 25,
-        "Name": "Microwaves Campus Centre",
-        "FileName": "360_Microwaves",
-        "latitude": -37.91166728671166,
-        "longitude": 145.13292591554273,
-        "zLevel": 2
-    }
-         ,
-        {
-        "ID": 26,
-        "Name": "G24 engineering 60",
-        "FileName": "360_OutsideMakerspace",
-        "latitude": -37.90984342324619,
-        "longitude": 145.1342335335612,
-        "zLevel": 1
-    }
-     ,
-      {
-        "ID": 27,
-        "Name": "LG09 design and tech building",
-        "FileName": "360_LG02Corridor",
-        "latitude": -37.90975783175505,
-        "longitude": 145.1354707378469,
-        "zLevel": -1
-    },
-{
-        "ID": 28,
-        "Name": "Outside ESports Campus Centre Basement",
-        "FileName": "360_ESportsOutside",
-        "latitude": -37.91154072393464,
-        "longitude": 145.13293060107094,
-        "zLevel": -1
-    }
-    ,
-{
-        "ID": 29,
-        "Name": "LTB Ground Stairs",
-        "FileName": "360_LTB_Ground_Stairs",
-        "latitude": -37.91351665414372,
-        "longitude": 145.13269567657903
-,
-        "zLevel": 1
-    }
-    ,
-{
-        "ID": 30,
-        "Name": "Piano Room campus centre Basement",
-        "FileName": "360_PianoRoom",
-        "latitude": -37.91155499733444,
-        "longitude": 145.13297762898281
-,
-        "zLevel": -1
-    }
-     ,
-{
-        "ID": 31,
-        "Name": "Design and Build Studio Lockers",
-        "FileName": "360_DnBLockers",
-        "latitude": -37.90921941174673,
-        "longitude": 145.1351335035505,
-        "zLevel": -1
-    }
-    ,
-{
-        "ID": 32,
-        "Name": "LTB 135C",
-        "FileName": "360_LTB_Common_136",
-        "latitude": -37.91361022152908,
-        "longitude": 145.13282642077394,
-        "zLevel": 2
-    }
-    ,
-{
-        "ID": 33,
-        "Name": "LTB 181A",
-        "FileName": "360_LTB_181A",
-        "latitude": -37.913745519097944,
-        "longitude": 145.13242023629
-,
-        "zLevel": 2
-    }    ,
-{
-        "ID": 34,
-        "Name": "Club Locker Room Campus Centre ",
-        "FileName": "360_ClubLockerRoom",
-        "latitude": -37.911671443753455,
-        "longitude": 145.13311707248045
-,
-        "zLevel": -1
+      "ID": 17,
+      "Name": "LTB_G81",
+      "FileName": "360_LTB_G81",
+      "latitude": -37.913857943837506,
+      "longitude": 145.13228375038608,
+      "zLevel": 1
     },
     {
-        "ID": 35,
-        "Name": "East Corridor Menzies Level 11",
-        "FileName": "360_L11_Menzies",
-        "latitude": -37.91259767473501,
-        "longitude": 145.13285819756624,
-        "zLevel": 12
+      "ID": 18,
+      "Name": "MenziesGroundFloor",
+      "FileName": "360_MenziesGroundFloor",
+      "latitude": -37.91270903845613,
+      "longitude": 145.13251189854333,
+      "zLevel": 1
+    },
+    {
+      "ID": 19,
+      "Name": "C1Theatre",
+      "FileName": "360_C1Theatre",
+      "latitude": -37.91105696020817,
+      "longitude": 145.13405065007504,
+      "zLevel": 1
+    },
+    {
+      "ID": 20,
+      "Name": "LTB_G81_Corner",
+      "FileName": "360_LTB_G81_Corner",
+      "latitude": -37.91369263128193,
+      "longitude": 145.13234996381397,
+      "zLevel": 1
+    },
+    {
+      "ID": 21,
+      "Name": "Airport Lounge",
+      "FileName": "360_AirportLounge",
+      "latitude": -37.911892918417834,
+      "longitude": 145.13281139226973,
+      "zLevel": 2
+    },
+    {
+      "ID": 22,
+      "Name": "LG_14 Design and tech building",
+      "FileName": "360_DT_LG_14",
+      "latitude": -37.90985687032333,
+      "longitude": 145.1350765887716,
+      "zLevel": -1
+    },
+    {
+      "ID": 23,
+      "Name": "L1_Menzies",
+      "FileName": "360_L1_Menzies",
+      "latitude": -37.91265304613119,
+      "longitude": 145.13264312657208,
+      "zLevel": 2
+    },
+    {
+      "ID": 24,
+      "Name": "Eng Makerspace",
+      "FileName": "360_Eng_Makerspace",
+      "latitude": -37.909854202716005,
+      "longitude": 145.13443414482776,
+      "zLevel": 1
+    },
+    {
+      "ID": 25,
+      "Name": "Microwaves Campus Centre",
+      "FileName": "360_Microwaves",
+      "latitude": -37.91166728671166,
+      "longitude": 145.13292591554273,
+      "zLevel": 2
+    },
+    {
+      "ID": 26,
+      "Name": "G24 engineering 60",
+      "FileName": "360_OutsideMakerspace",
+      "latitude": -37.90984342324619,
+      "longitude": 145.1342335335612,
+      "zLevel": 1
+    },
+    {
+      "ID": 27,
+      "Name": "LG09 design and tech building",
+      "FileName": "360_LG02Corridor",
+      "latitude": -37.90975783175505,
+      "longitude": 145.1354707378469,
+      "zLevel": -1
+    },
+    {
+      "ID": 28,
+      "Name": "Outside ESports Campus Centre Basement",
+      "FileName": "360_ESportsOutside",
+      "latitude": -37.91154072393464,
+      "longitude": 145.13293060107094,
+      "zLevel": -1
+    },
+    {
+      "ID": 29,
+      "Name": "LTB Ground Stairs",
+      "FileName": "360_LTB_Ground_Stairs",
+      "latitude": -37.91351665414372,
+      "longitude": 145.13269567657903,
+      "zLevel": 1
+    },
+    {
+      "ID": 30,
+      "Name": "Piano Room campus centre Basement",
+      "FileName": "360_PianoRoom",
+      "latitude": -37.91155499733444,
+      "longitude": 145.13297762898281,
+      "zLevel": -1
+    },
+    {
+      "ID": 31,
+      "Name": "Design and Build Studio Lockers",
+      "FileName": "360_DnBLockers",
+      "latitude": -37.90921941174673,
+      "longitude": 145.1351335035505,
+      "zLevel": -1
+    },
+    {
+      "ID": 32,
+      "Name": "LTB 135C",
+      "FileName": "360_LTB_Common_136",
+      "latitude": -37.91361022152908,
+      "longitude": 145.13282642077394,
+      "zLevel": 2
+    },
+    {
+      "ID": 33,
+      "Name": "LTB 181A",
+      "FileName": "360_LTB_181A",
+      "latitude": -37.913745519097944,
+      "longitude": 145.13242023629,
+      "zLevel": 2
+    },
+    {
+      "ID": 34,
+      "Name": "Club Locker Room Campus Centre ",
+      "FileName": "360_ClubLockerRoom",
+      "latitude": -37.911671443753455,
+      "longitude": 145.13311707248045,
+      "zLevel": -1
+    },
+    {
+      "ID": 35,
+      "Name": "East Corridor Menzies Level 11",
+      "FileName": "360_L11_Menzies",
+      "latitude": -37.91259767473501,
+      "longitude": 145.13285819756624,
+      "zLevel": 12
+    },
+    {
+      "ID": 36,
+      "Name": "West Stairs LTB Level 1",
+      "FileName": "360_LTB_SideStairs",
+      "latitude": -37.91353362238021,
+      "longitude": 145.13241782733536,
+      "zLevel": 2
+    },
+    {
+      "ID": 37,
+      "Name": "S201 Menzies ",
+      "FileName": "360_MenziesLvl2",
+      "latitude": -37.91266523231066,
+      "longitude": 145.13264168117536,
+      "zLevel": 3
+    },
+    {
+      "ID": 38,
+      "Name": "102 Collaborative Design and Tech Building",
+      "FileName": "360_DT_102",
+      "latitude": -37.90969485864912,
+      "longitude": 145.13526548921868,
+      "zLevel": 2
+    },
+    {
+      "ID": 39,
+      "Name": " 284 LTB",
+      "FileName": "360_LTB_284",
+      "latitude": -37.913966131213975,
+      "longitude": 145.132347795585,
+      "zLevel": 3
+    },
+    {
+      "ID": 40,
+      "Name": "107 Design and Tech Building",
+      "FileName": "360_DT_107Outside",
+      "latitude": -37.90913402047721,
+      "longitude": 145.13505178715297,
+      "zLevel": 2
+    },
+    {
+      "ID": 41,
+      "Name": "Treehouse LTB",
+      "FileName": "360_LTB_Treehouse",
+      "latitude": -37.91362553334162,
+      "longitude": 145.1322919865595,
+      "zLevel": 4
+    },
+    {
+      "ID": 42,
+      "Name": "Skulls LTB Level 3",
+      "FileName": "360_LTB_Skulls",
+      "latitude": -37.91404635018452,
+      "longitude": 145.13220762380098,
+      "zLevel": 4
+    },
+    {
+      "ID": 43,
+      "Name": "Design and Tech Level 3",
+      "FileName": "360_DT_Lvl_3",
+      "latitude": -37.90947022747471,
+      "longitude": 145.13514331323103,
+      "zLevel": 4
+    },
+    {
+      "ID": 44,
+      "Name": "385 LTB ",
+      "FileName": "360_LTB_385Corner",
+      "latitude": -37.90947022747471,
+      "longitude": 145.13514331323103,
+      "zLevel": 4
+    },
+    {
+      "ID": 45,
+      "Name": "Menzies Level 8 Lookout",
+      "FileName": "360_Menzies_Lvl_8",
+      "latitude": -37.91265510957941,
+      "longitude": 145.13246043564203,
+      "zLevel": 9
     }
-    , 
-{
-        "ID": 36,
-        "Name": "West Stairs LTB Level 1",
-        "FileName": "360_LTB_SideStairs",
-        "latitude": -37.91353362238021,
-        "longitude": 145.13241782733536,
-        "zLevel": 2
-    }
-     ,
-     {
-        "ID": 37,
-        "Name": "S201 Menzies ",
-        "FileName": "360_MenziesLvl2",
-        "latitude": -37.91266523231066,
-        "longitude": 145.13264168117536,
-        "zLevel": 3
-    }
-      ,
-     {
-        "ID": 38,
-        "Name": "102 Collaborative Design and Tech Building",
-        "FileName": "360_DT_102",
-        "latitude": -37.90969485864912,
-        "longitude": 145.13526548921868,
-        "zLevel": 2
-    }
- ,
-     {
-        "ID": 39,
-        "Name": " 284 LTB",
-        "FileName": "360_LTB_284",
-        "latitude": -37.913966131213975,
-        "longitude": 145.132347795585,
-        "zLevel": 3
-    }
-    ,
-     {
-        "ID": 40,
-        "Name": "107 Design and Tech Building",
-        "FileName": "360_DT_107Outside",
-        "latitude": -37.90913402047721,
-        "longitude": 145.13505178715297
-,
-        "zLevel": 2
-    }
-        ,
-     {
-        "ID": 41,
-        "Name": "Treehouse LTB",
-        "FileName": "360_LTB_Treehouse",
-        "latitude": -37.91362553334162,
-        "longitude": 145.1322919865595,
-        "zLevel": 4
-    }
-            ,
-     {
-        "ID": 42,
-        "Name": "Skulls LTB Level 3",
-        "FileName": "360_LTB_Skulls",
-        "latitude": -37.91404635018452,
-        "longitude": 145.13220762380098,
-        "zLevel": 4
-    }
-,
-     {
-        "ID": 43,
-        "Name": "Design and Tech Level 3",
-        "FileName": "360_DT_Lvl_3",
-        "latitude": -37.90947022747471,
-        "longitude": 145.13514331323103,
-        "zLevel": 4
-    }
-    ,
-     {
-        "ID": 44,
-        "Name": "385 LTB ",
-        "FileName": "360_LTB_385Corner",
-        "latitude": -37.90947022747471,
-        "longitude": 145.13514331323103,
-        "zLevel": 4
-    }
-    ,
-     {
-        "ID": 45,
-        "Name": "Menzies Level 8 Lookout",
-        "FileName": "360_Menzies_Lvl_8",
-        "latitude": -37.91265510957941,
-        "longitude": 145.13246043564203,
-        "zLevel": 9
-    }
-    
-
-
-    
-    
-
   ],
 
   "MapPacks": [
@@ -412,18 +379,20 @@
     {
       "ID": 1,
       "Name": "OG Placeholders",
-      "locationIDs": [0, 14]
+      "locationIDs": [0, 14],
+      "bucketSubdirectory": ""
     },
     {
       "ID": 2,
       "Name": "Monash 101",
-      "locationIDs": [6]
+      "locationIDs": [5],
+      "bucketSubdirectory": "monash-101"
     },
     {
       "ID": 3,
       "Name": "Outside Living",
-      "locationIDs": [1, 2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14]
+      "locationIDs": [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+      "bucketSubdirectory": "outside-living"
     }
-
   ]
 }

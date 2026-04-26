@@ -1,4 +1,4 @@
-# MNET Geoguessr + Monash MazeMaps
+# MNET CampusGuessr + Monash MazeMaps
 
 A React application that integrates MazeMap (Monash University's indoor mapping system) with basic map click functionality.
 
@@ -21,12 +21,13 @@ The application now supports basic map click events that:
 ### Z-Level Restrictions
 
 The map is configured to display parking levels and building levels:
+
 - **P4 (Parking Level 4)**: Level -4
 - **P3 (Parking Level 3)**: Level -3
 - **P2 (Parking Level 2)**: Level -2
 - **P1 (Parking Level 1)**: Level -1
 - **LG (Lower Ground)**: Level 0
-- **G (Ground)**: Level 1  
+- **G (Ground)**: Level 1
 - **1 (First Floor)**: Level 2
 - **2 (Second Floor)**: Level 3
 - **3 (Third Floor)**: Level 4
@@ -44,6 +45,7 @@ Only parking levels (P1-P4) and building levels (LG-11) are accessible. Other ba
 ### Custom Level Selector
 
 The application includes a custom level selector that:
+
 - **Replaces the default MazeMap control** with a clean, custom interface
 - **Shows parking levels (P1-P4) and building levels (LG-11)** - only relevant levels are displayed
 - **Provides clear level names** (e.g., "P1 (Parking Level 1)", "LG (Lower Ground)", "G (Ground)")
@@ -67,6 +69,7 @@ The application includes a custom level selector that:
 ### Interactive Markers
 
 The application includes a marker system for placing guesses:
+
 - **Single Marker**: Only one marker can exist on the map at a time
 - **Guess Storage**: Each marker stores longitude, latitude, and z-level
 - **Official API**: Uses MazeMap.MazeMarker for reliable marker placement
@@ -76,6 +79,7 @@ The application includes a marker system for placing guesses:
 ### Enhanced Click Data
 
 The application leverages MazeMap's official `getMapClickData()` method to provide:
+
 - **Z-Level Information**: Floor/level where the click occurred
 - **Building ID**: Identifier for the building structure
 - **Room ID**: Specific room identifier if available
@@ -99,6 +103,7 @@ The application leverages MazeMap's official `getMapClickData()` method to provi
 ## Console Output
 
 When you click on the map, you'll see output like:
+
 ```
 Marker placed at: {
   coordinates: {lng: 145.133963, lat: -37.911785},

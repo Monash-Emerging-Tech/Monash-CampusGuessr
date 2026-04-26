@@ -1,4 +1,4 @@
-# MNET Geoguessr – Setup Guide
+# MNET CampusGuessr – Setup Guide
 
 This guide covers everything you need to get the project running: Unity version, Node.js, the web package, Vite, and the development workflow.
 
