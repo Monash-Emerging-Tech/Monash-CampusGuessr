@@ -29,6 +29,8 @@ public class GameLogic : MonoBehaviour
     [SerializeField] private GameObject gameUI;
     [SerializeField] private GameObject mapUI;
     [SerializeField] private GameObject resultsUI;
+    [SerializeField] private GameObject loadingScreenUI;
+    [SerializeField] private Animator startAnimator;
 
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
@@ -263,6 +265,8 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        StartCoroutine(WaitForAssetsAndStart());
+
         Debug.Log("Scene loaded: " + scene.name);
 
         // Hide map when MenuScene_MonashClayton is loaded
@@ -306,6 +310,24 @@ public class GameLogic : MonoBehaviour
 
             LogDebug("GameScene loaded - Map shown, game initialized");
         }
+    }
+
+    private IEnumerator WaitForAssetsAndStart()
+    {
+        loadingScreenUI.SetActive(true);
+        startAnimator.enabled = false;
+
+        // Wait until LocationManager exists
+        yield return new WaitUntil(() => locationManager != null);
+
+        // Wait until textures/materials are fully loaded
+        yield return new WaitUntil(() => locationManager.IsReady);
+
+        // small delay for smooth UX
+        yield return new WaitForSeconds(0.5f);
+
+        loadingScreenUI.SetActive(false);
+        startAnimator.enabled = true;
     }
 
     #endregion

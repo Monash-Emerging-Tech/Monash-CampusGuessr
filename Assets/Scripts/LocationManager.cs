@@ -90,6 +90,7 @@ public class LocationManager : MonoBehaviour
     private Dictionary<int, bool> locationLoadingStatus; // Track which locations are currently loading
     private int totalLocationsToLoad = 0;
     private int locationsLoadedCount = 0;
+    public bool IsReady { get; private set; } = false;
 
     #endregion
 
@@ -418,6 +419,9 @@ public class LocationManager : MonoBehaviour
         {
             Debug.Log($"LocationManager: Material loading complete. All {successCount} locations loaded successfully.");
         }
+        
+        IsReady = true;
+        Debug.Log($"LocationManager: READY");
     }
 
     /// <summary>
