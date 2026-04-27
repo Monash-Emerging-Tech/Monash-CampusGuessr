@@ -19,6 +19,7 @@ Ange
 Madison
 Moon
 Zaina
+Joshua
 
 ## Features
 
