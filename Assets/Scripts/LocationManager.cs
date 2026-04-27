@@ -350,7 +350,6 @@ public class LocationManager : MonoBehaviour
         }
 
         Debug.Log($"LocationManager: Loading from remote - base URL: {imageBaseUrl}");
-        CoroutineRunner.Instance.StartCoroutine(AssignLocationMaterialsFromRemote());
     }
 
     /// <summary>
@@ -420,6 +419,25 @@ public class LocationManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Fetches images from remote URL in specified mappack, creates skybox materials. 
+    /// Per-location fallback to local Resources if enabled.
+    /// Flow: For each location: try remote, then if fail and useLocalFallback, try Resources.
+    /// WHEN ALL REMOTE: Remove the fallback block; simplify to remote-only.
+    /// </summary> 
+    public IEnumerator LoadMaterialsForMapPack(MapPack mapPack)
+    {
+        var locations = GetLocationsFromMapPack(mapPack);
+        locationLoadingStatus = new Dictionary<int, bool>();
+        totalLocationsToLoad = locations.Count;
+        locationsLoadedCount = 0;
+
+        foreach (Location location in locations)
+        {
+            locationLoadingStatus[location.ID] = false;
+            yield return LoadLocationMaterialFromRemote(location);
+        }
+    }
     /// <summary>
     /// Gets the bucket subdirectory for a location by finding which MapPack it belongs to
     /// Only uses specific MapPacks (skips "all" since it's just a logical grouping, not a bucket subdirectory)

@@ -277,36 +277,37 @@ public class GameLogic : MonoBehaviour
         else if (scene.name == "GameScene")
         {
             LogDebug("GameScene loaded - Initializing game...");
-
-            // Ensure MapInteractionManager is available
-            EnsureMapManager();
-
-            // Initialize game state
-            isGameActive = true;
-            inGame = true;
-            currentRound = 1;  // Start at round 1, not 0
-            currentScore = 0;
-            isGuessing = true;
-            isRoundActive = false;  // Ensure round is not active so nextRound can proceed
-            scoreData.ResetAll();
-
-            // Ensure map pack is resolved before starting round
-            if (locationManager != null && resolvedMapPackId == -1)
-            {
-                if (!ResolveMapPackId())
-                {
-                    LogError("Failed to resolve MapPack in OnSceneLoaded - cannot start game");
-                    return;
-                }
-            }
-
-            // Start the first round (which will also show the map)
-            nextRound();
-
-            LogDebug("GameScene loaded - Map shown, game initialized");
+            StartCoroutine(InitialiseGameScene());
         }
     }
+    
+    /// <summary>
+    /// Initialises the game scene - resolves map pack, loads textures, then starts the first round
+    /// </summary>
+    private IEnumerator InitialiseGameScene()
+    {
+        EnsureMapManager();
 
+        isGameActive = true;
+        inGame = true;
+        currentRound = 1;
+        currentScore = 0;
+        isGuessing = true;
+        isRoundActive = false;
+        scoreData.ResetAll();
+
+        if (locationManager == null || !ResolveMapPackId())
+        {
+            LogError("Failed to resolve MapPack in InitialiseGameScene - cannot start game");
+            yield break;
+        }
+
+        locationManager.SetCurrentMapPack(resolvedMapPackId);
+        yield return StartCoroutine(locationManager.LoadMaterialsForMapPack(locationManager.GetCurrentMapPack()));
+
+        nextRound();
+        LogDebug("GameScene loaded - textures loaded, game initialized");
+    }
     #endregion
 
     #region Game Initialization
