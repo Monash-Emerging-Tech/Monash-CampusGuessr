@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3ee105ab10333c4e93e80cd0f5be425, type: 3}
   m_Name: Score Data Scriptable Object
   m_EditorClassIdentifier: 
-  currentScore: 1000
+  currentScore: 0
+  roundScore: 0
+  distanceScore: 0
+  prevLocations: []
+  prevScores: 

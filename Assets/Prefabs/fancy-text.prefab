@@ -463,4 +463,5 @@ MonoBehaviour:
   - {fileID: 178037043072852828}
   - {fileID: 6762290759156888586}
   - {fileID: 843203249677584566}
-  editorText: PLACEHOLDER
+  scoreData: {fileID: 11400000, guid: b39ae3316ff9c414aac57f600db77404, type: 2}
+  data: 

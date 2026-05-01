@@ -1,8 +1,5 @@
 using UnityEngine;
 using System;
-using System.Linq;
-using NUnit.Framework;
-using System.Collections;
 using System.Collections.Generic;
 
 [CreateAssetMenu(menuName = "Game/Score Data")]
@@ -138,4 +135,13 @@ public class ScoreDataScriptableObject : ScriptableObject
 
     }
 
+}
+public static class ScoreAnimationSettings
+{
+    public const float Duration = 0.8f;
+
+    public static float Ease(float t)
+    {
+        return Mathf.SmoothStep(0, 1, t);
+    }
 }
