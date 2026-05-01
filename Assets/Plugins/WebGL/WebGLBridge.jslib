@@ -38,6 +38,12 @@ mergeInto(LibraryManager.library, {
     if (typeof window.addMarkerFromUnity === "function")
       window.addMarkerFromUnity(lat, lng, label, type);
   },
+  setMapCenterFromUnity: function(lat, lng, zoom) {
+    const map = window.mazeMapInstance;
+    if (map && typeof map.jumpTo === "function") {
+        map.jumpTo({ center: [lng, lat], zoom: zoom });
+    }
+  },
   showTooltipFromWeb: function (seconds) {
     if (
       typeof window.unityInstance !== "undefined" &&

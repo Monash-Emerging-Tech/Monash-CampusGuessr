@@ -45,6 +45,9 @@ public class GameLogic : MonoBehaviour
 
     // MapPack management
     private int resolvedMapPackId = 2; // Default to Monash 101
+    private float pendingMapCenterLat = -37.9106f;  // ← add these
+    private float pendingMapCenterLng = 145.1361f;
+    private int pendingMapZoom = 16;
 
     private Dictionary<int, LocationManager.MapPack> allMapPacks;
 
@@ -304,7 +307,8 @@ public class GameLogic : MonoBehaviour
 
         locationManager.SetCurrentMapPack(resolvedMapPackId);
         yield return StartCoroutine(locationManager.LoadMaterialsForMapPack(locationManager.GetCurrentMapPack()));
-
+        if (MapInteractionManager.Instance != null)
+            MapInteractionManager.Instance.SetMapCenter(pendingMapCenterLat, pendingMapCenterLng, pendingMapZoom);
         nextRound();
         LogDebug("GameScene loaded - textures loaded, game initialized");
     }
@@ -806,7 +810,16 @@ public class GameLogic : MonoBehaviour
             LogError("LocationManager failed to initialize after waiting. Check LocationManager component.");
         }
     }
-
+    /// <summary>
+    /// Sets the pending map center to be applied when the game scene loads
+    /// </summary>
+    public void SetPendingMapCenter(float lat, float lng, int zoom)
+    {
+        pendingMapCenterLat = lat;
+        pendingMapCenterLng = lng;
+        pendingMapZoom = zoom;
+        LogDebug($"Pending map center set to: {lat}, {lng}, zoom: {zoom}");
+    }
     #endregion
 
     #region Debug Logging

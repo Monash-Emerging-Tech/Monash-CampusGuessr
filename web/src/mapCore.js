@@ -123,11 +123,14 @@ export function initializeMazeMap(onMapClick) {
   }
   try {
     const MazeLibrary = window.Maze || mazemap;
+    const pendingCenter = window.pendingMapCenter;
     const map = new MazeLibrary.Map({
       container: "map",
       campuses: 159,
-      center: { lng: 145.1361, lat: -37.9106 },
-      zoom: 16,
+      center: pendingCenter
+        ? { lng: pendingCenter.lng, lat: pendingCenter.lat }
+        : { lng: 145.1361, lat: -37.9106 },
+      zoom: pendingCenter ? pendingCenter.zoom : 16,
       minZLevel: 0,
       maxZLevel: 12,
     });

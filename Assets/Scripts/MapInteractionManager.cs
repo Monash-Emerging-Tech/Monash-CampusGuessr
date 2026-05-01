@@ -34,6 +34,8 @@ public class MapInteractionManager : MonoBehaviour
     private static extern void showLoading(bool show);
     [System.Runtime.InteropServices.DllImport("__Internal")]
     private static extern void addMarkerFromUnity(float lat, float lng, string label, string type);
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern void setMapCenterFromUnity(float lat, float lng, int zoom);
 #endif
     [Header("Map Settings")]
     [SerializeField] private bool enableMapOnStart = false;
@@ -431,7 +433,18 @@ public class MapInteractionManager : MonoBehaviour
         LogDebug("Map state would be cleared on JavaScript");
 #endif
     }
-
+    
+/// <summary>
+/// Sets the map center and zoom level
+/// </summary>
+public void SetMapCenter(float lat, float lng, int zoom = 16)
+{
+#if UNITY_WEBGL && !UNITY_EDITOR
+    setMapCenterFromUnity(lat, lng, zoom);
+#else
+    LogDebug($"Map center would be set to: {lat}, {lng}, zoom: {zoom}");
+#endif
+}
     #endregion
 
     #region Scoring System

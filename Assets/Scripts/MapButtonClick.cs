@@ -9,11 +9,17 @@ public class MapButtonClick : MonoBehaviour
 {
     public string targetScene;
     public string mapPackName;
+    public float mapCenterLat;
+    public float mapCenterLng;
+    public int mapZoom = 16;
 
     void OnMouseDown()
     {
-        if (!string.IsNullOrEmpty(mapPackName))
+        if (!string.IsNullOrEmpty(mapPackName) && GameLogic.Instance != null)
+        {
             GameLogic.Instance.SetMapPackByName(mapPackName);
+            GameLogic.Instance.SetPendingMapCenter(mapCenterLat, mapCenterLng, mapZoom);
+        }
         
         SceneManager.LoadScene(targetScene);
     }
