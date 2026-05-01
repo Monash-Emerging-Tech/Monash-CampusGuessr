@@ -175,8 +175,10 @@ public class GameLogic : MonoBehaviour
             LogDebug("Started in MenuScene_MonashClayton - Map hidden");
         }
 
-        // Initialize game (only if not in MenuScene_MonashClayton)
-        if (currentScene.name != "MenuScene_MonashClayton")
+        // Initialise game only in actual game scenes
+        if (currentScene.name != "MenuScene_MonashClayton" 
+            && currentScene.name != "MenuScene_MonashCollege"
+            && currentScene.name != "Map_selection")
         {
             InitializeGame();
         }
