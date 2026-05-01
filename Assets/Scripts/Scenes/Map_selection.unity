@@ -496,6 +496,71 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a03365c3f42db4004abbbe3ecb3df38a, type: 3}
+--- !u!1001 &282288888
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 487263644213522047, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: scoreData
+      value: 
+      objectReference: {fileID: 11400000, guid: b39ae3316ff9c414aac57f600db77404, type: 2}
+    - target: {fileID: 487263644213522047, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: mapPackName
+      value: Outside Living
+      objectReference: {fileID: 0}
+    - target: {fileID: 2956644974186284610, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_Name
+      value: GameLogic
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661988244959880503, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 00668585c194fc24aa8b327e232740d8, type: 3}
 --- !u!1 &339699856
 GameObject:
   m_ObjectHideFlags: 0
@@ -1873,6 +1938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetScene: MenuScene_MonashClayton
+  mapPackName: Outside Living
 --- !u!1 &1002132649
 GameObject:
   m_ObjectHideFlags: 0
@@ -2903,6 +2969,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetScene: MenuScene_MonashCollege
+  mapPackName: Monash College
 --- !u!65 &1623124588
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3595,3 +3662,4 @@ SceneRoots:
   - {fileID: 1773308468}
   - {fileID: 2013630250}
   - {fileID: 1358542073}
+  - {fileID: 282288888}
