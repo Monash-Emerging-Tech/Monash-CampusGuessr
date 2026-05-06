@@ -239,7 +239,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &28740907
 RectTransform:
   m_ObjectHideFlags: 0
@@ -793,7 +793,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &183900681
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1714,6 +1714,7 @@ Transform:
   - {fileID: 1091352137}
   - {fileID: 1154568850}
   - {fileID: 417881032}
+  - {fileID: 876781277}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &379615400
@@ -2147,7 +2148,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &418021038
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4579,7 +4580,7 @@ GameObject:
   - component: {fileID: 781142483}
   - component: {fileID: 781142482}
   m_Layer: 0
-  m_Name: 'Camrera animation4 '
+  m_Name: Animation4(map4_to_clayton)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5252,6 +5253,93 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 860272935}
   m_CullTransparentMesh: 1
+--- !u!1 &876781276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 876781277}
+  - component: {fileID: 876781278}
+  m_Layer: 0
+  m_Name: text(clayton) (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &876781277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 876781276}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 10.505829, y: 101.8858, z: 2.8544922}
+  m_LocalScale: {x: 0.36362004, y: 0.36361998, z: 0.36361995}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 369414455}
+  m_LocalEulerAnglesHint: {x: 90, y: -90, z: 0}
+--- !u!212 &876781278
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 876781276}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: 8456aa68f751d4656ac6f92ee40c40d6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 60.000004, y: 33.750004}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1001 &892285453
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5445,7 +5533,7 @@ GameObject:
   - component: {fileID: 932971571}
   - component: {fileID: 932971570}
   m_Layer: 0
-  m_Name: Camera animation3
+  m_Name: Animation3(map3_to_map4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5802,13 +5890,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 966825692}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.3348428, y: -0.61330587, z: 0.32130966, w: 0.6391372}
-  m_LocalPosition: {x: 315, y: 108, z: -106.3}
+  m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
+  m_LocalPosition: {x: 248, y: 35, z: -163}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 310.7001, y: -0.0001035623, z: 0.00008842946}
 --- !u!114 &966825696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6007,7 +6095,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a03365c3f42db4004abbbe3ecb3df38a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 242.1
+      value: 246.71431
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a03365c3f42db4004abbbe3ecb3df38a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6015,7 +6103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a03365c3f42db4004abbbe3ecb3df38a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -157.3
+      value: -185.93056
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a03365c3f42db4004abbbe3ecb3df38a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6178,7 +6266,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1098027900
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8125,7 +8213,7 @@ GameObject:
   - component: {fileID: 1614923032}
   - component: {fileID: 1614923033}
   m_Layer: 0
-  m_Name: camera animation2
+  m_Name: Animation2(dockland_to_map3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9116,7 +9204,7 @@ GameObject:
   - component: {fileID: 1979091869}
   - component: {fileID: 1979091868}
   m_Layer: 0
-  m_Name: camera animation1
+  m_Name: Animation1(clayton_to_dockland)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
