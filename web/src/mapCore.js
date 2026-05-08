@@ -71,6 +71,10 @@ export function getMapboxMap(map) {
 
 // --------------------------------------------------------------- MAZE MAP INITIALIZATION
 
+// Default floor (zLevel) to show when entering each campus.
+// If a third campus is added, this table needs a manual update.
+const CAMPUS_DEFAULT_ZLEVEL = { 159: 1, 413: 10 };
+
 function isMazeMapReady() {
   if (typeof mazemap !== "undefined" && typeof mazemap.Map === "function")
     return true;
@@ -143,7 +147,7 @@ export function initializeMazeMap(onMapClick) {
       maxZLevel: 12,
     });
     window.mazeMapInstance = map;
-    window.currentMapView = { lat, lng, zoom, campusId };
+    window.currentMapView = { lat, lng, zoom, campusId, zLevel: CAMPUS_DEFAULT_ZLEVEL[campusId] ?? 1 };
 
     map.on("load", () => {
       console.log("Maze Maps ready for interaction");
