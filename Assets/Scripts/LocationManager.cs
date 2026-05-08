@@ -55,6 +55,7 @@ public class LocationManager : MonoBehaviour
     {
         public int ID;
         public string Name;
+        public int campusId; // MazeMap campus ID. Falls back to 159 (Clayton) in GameLogic if 0.
         public List<int> locationIDs;
         public string bucketSubdirectory; // Subdirectory in R2 bucket for this MapPack (e.g., "monash-101"). Leave empty for root level.
     }

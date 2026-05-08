@@ -38,11 +38,9 @@ mergeInto(LibraryManager.library, {
     if (typeof window.addMarkerFromUnity === "function")
       window.addMarkerFromUnity(lat, lng, label, type);
   },
-  setMapCenterFromUnity: function(lat, lng, zoom) {
-    const map = window.mazeMapInstance;
-    if (map && typeof map.jumpTo === "function") {
-        map.jumpTo({ center: [lng, lat], zoom: zoom });
-    }
+  setMapPackViewFromUnity: function(campusId, lat, lng, zoom) {
+    if (typeof window.mmSetMapPackView === "function")
+      window.mmSetMapPackView(campusId, lat, lng, zoom);
   },
   showTooltipFromWeb: function (seconds) {
     if (
