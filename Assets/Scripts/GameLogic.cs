@@ -49,9 +49,10 @@ public class GameLogic : MonoBehaviour
 
     // MapPack management
     private int resolvedMapPackId = 2; // Default to Monash 101
-    private float pendingMapCenterLat = -37.9106f;  // ← add these
+    private float pendingMapCenterLat = -37.9106f;
     private float pendingMapCenterLng = 145.1361f;
     private int pendingMapZoom = 16;
+    private int pendingCampusId = 159;
 
     private Dictionary<int, LocationManager.MapPack> allMapPacks;
 
@@ -320,7 +321,7 @@ public class GameLogic : MonoBehaviour
             yield return StartCoroutine(locationManager.EnsureLocationMaterialLoaded(queuedNextLocationId.Value));
         }
         if (MapInteractionManager.Instance != null)
-            MapInteractionManager.Instance.SetMapCenter(pendingMapCenterLat, pendingMapCenterLng, pendingMapZoom);
+            MapInteractionManager.Instance.SetMapCenter(pendingMapCenterLat, pendingMapCenterLng, pendingMapZoom, pendingCampusId);
         nextRound();
         LogDebug("GameScene loaded - first image prepared, game initialized");
     }
@@ -794,7 +795,12 @@ public class GameLogic : MonoBehaviour
 
         mapPackName = name;
         resolvedMapPackId = id;
-        LogDebug($"MapPack set to: {name} (ID: {id})");
+
+        var dict = locationManager.GetMapPackDict();
+        if (dict != null && dict.ContainsKey(id))
+            pendingCampusId = dict[id].campusId != 0 ? dict[id].campusId : 159;
+
+        LogDebug($"MapPack set to: {name} (ID: {id}, campusId: {pendingCampusId})");
 
         // Fire MapPack changed event
         OnMapPackChanged?.Invoke(name);
@@ -831,7 +837,12 @@ public class GameLogic : MonoBehaviour
         }
 
         resolvedMapPackId = id;
-        LogDebug($"GameLogic: MapPack '{mapPackName}' resolved to ID: {id}");
+
+        var dict = locationManager.GetMapPackDict();
+        if (dict != null && dict.ContainsKey(id))
+            pendingCampusId = dict[id].campusId != 0 ? dict[id].campusId : 159;
+
+        LogDebug($"GameLogic: MapPack '{mapPackName}' resolved to ID: {id}, campusId: {pendingCampusId}");
 
         // Fire MapPack changed event (only if this is not the initial startup resolution)
         if (mapPackName != "all" || resolvedMapPackId != 0) // Avoid firing for default startup

@@ -35,7 +35,7 @@ public class MapInteractionManager : MonoBehaviour
     [System.Runtime.InteropServices.DllImport("__Internal")]
     private static extern void addMarkerFromUnity(float lat, float lng, string label, string type);
     [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void setMapCenterFromUnity(float lat, float lng, int zoom);
+    private static extern void setMapPackViewFromUnity(int campusId, float lat, float lng, int zoom);
 #endif
     [Header("Map Settings")]
     [SerializeField] private bool enableMapOnStart = false;
@@ -435,14 +435,14 @@ public class MapInteractionManager : MonoBehaviour
     }
     
 /// <summary>
-/// Sets the map center and zoom level
+/// Sets the map center, zoom level, and campus (triggers MazeMap reinit if campus changes).
 /// </summary>
-public void SetMapCenter(float lat, float lng, int zoom = 16)
+public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159)
 {
 #if UNITY_WEBGL && !UNITY_EDITOR
-    setMapCenterFromUnity(lat, lng, zoom);
+    setMapPackViewFromUnity(campusId, lat, lng, zoom);
 #else
-    LogDebug($"Map center would be set to: {lat}, {lng}, zoom: {zoom}");
+    LogDebug($"Map center would be set to: {lat}, {lng}, zoom: {zoom}, campusId: {campusId}");
 #endif
 }
     #endregion
