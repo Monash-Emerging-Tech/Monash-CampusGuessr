@@ -477,7 +477,6 @@ Transform:
   - {fileID: 997239237}
   - {fileID: 553730952}
   - {fileID: 1457850966}
-  - {fileID: 1233031937}
   - {fileID: 319576129}
   - {fileID: 1396902475}
   - {fileID: 834867500}
@@ -3908,6 +3907,7 @@ GameObject:
   - component: {fileID: 780129257}
   - component: {fileID: 780129256}
   - component: {fileID: 780129255}
+  - component: {fileID: 780129258}
   m_Layer: 5
   m_Name: TempStartButton
   m_TagString: Untagged
@@ -4028,6 +4028,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 780129253}
   m_CullTransparentMesh: 1
+--- !u!114 &780129258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780129253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49343c21b7e00744c9376c00ad7c0f96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &825082881
 GameObject:
   m_ObjectHideFlags: 0
@@ -5226,6 +5238,7 @@ GameObject:
   - component: {fileID: 1018322431}
   - component: {fileID: 1018322430}
   - component: {fileID: 1018322429}
+  - component: {fileID: 1018322432}
   m_Layer: 5
   m_Name: TempStartButton
   m_TagString: Untagged
@@ -5242,7 +5255,7 @@ RectTransform:
   m_GameObject: {fileID: 1018322427}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -57}
-  m_LocalScale: {x: 3.3247254, y: 8, z: 1}
+  m_LocalScale: {x: 3.3247254, y: 11, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1668196536}
@@ -5295,19 +5308,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1018322430}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1668196535}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &1018322430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5320,7 +5321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 065e694c64dc046958840bf123b2b1f6, type: 2}
+  m_Material: {fileID: 2100000, guid: c24a1bc27c393fd4a92c095d63b5a0fc, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -5346,6 +5347,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1018322427}
   m_CullTransparentMesh: 1
+--- !u!114 &1018322432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018322427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49343c21b7e00744c9376c00ad7c0f96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1018636383
 GameObject:
   m_ObjectHideFlags: 0
@@ -6292,7 +6305,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1483390554}
-  m_Father: {fileID: 43849360}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1280901466
 GameObject:
@@ -8629,6 +8642,7 @@ GameObject:
   - component: {fileID: 1668196539}
   - component: {fileID: 1668196538}
   - component: {fileID: 1668196537}
+  - component: {fileID: 1668196540}
   m_Layer: 5
   m_Name: 'Settings '
   m_TagString: Untagged
@@ -8719,6 +8733,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1668196540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668196535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe53a3ce5cc9a0d49a44cd38b038ce0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingsComponent: {fileID: 2119286108675313795, guid: eca17b3884c8e38459c3f6e3330d9d92, type: 3}
+  settingsButton: {fileID: 1018322429}
 --- !u!4 &1678386902 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: dab634b6a2ea748cca86f92ef72266e5, type: 3}
@@ -23580,5 +23608,6 @@ SceneRoots:
   - {fileID: 1951764981528203213}
   - {fileID: 23660604}
   - {fileID: 565171056}
-  - {fileID: 43849360}
+  - {fileID: 1233031937}
   - {fileID: 1298763093686907467}
+  - {fileID: 43849360}

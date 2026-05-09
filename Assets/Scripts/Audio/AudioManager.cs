@@ -11,7 +11,9 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
+    [Header("Sound Clips")]
     [SerializeField] private AudioClip gameplayMusic;
+    [SerializeField] private AudioClip buttonClickSound;
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource bgmSource;
@@ -43,6 +45,11 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         PlayMusic(gameplayMusic);
+    }
+
+    public void PlayButtonClick()
+    {
+        PlaySFX(buttonClickSound);
     }
 
     // -----------------------------
