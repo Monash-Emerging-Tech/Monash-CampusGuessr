@@ -11,6 +11,8 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
+    [SerializeField] private AudioClip gameplayMusic;
+
     [Header("Audio Sources")]
     [SerializeField] private AudioSource bgmSource;
     [SerializeField] private AudioSource sfxSource;
@@ -38,12 +40,21 @@ public class AudioManager : MonoBehaviour
         LoadVolumes();
     }
 
+    private void Start()
+    {
+        PlayMusic(gameplayMusic);
+    }
+
     // -----------------------------
     // MUSIC
     // -----------------------------
     public void PlayMusic(AudioClip clip, bool loop = true)
     {
         if (clip == null) return;
+
+        // Prevent restarting same track
+        if (bgmSource.clip == clip && bgmSource.isPlaying)
+            return;
 
         bgmSource.clip = clip;
         bgmSource.loop = loop;

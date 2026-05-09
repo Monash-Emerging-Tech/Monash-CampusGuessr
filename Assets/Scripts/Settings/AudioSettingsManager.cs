@@ -13,8 +13,8 @@ public class AudioSettingsManager : MonoBehaviour
     [SerializeField] private Slider sfxSlider;
 
     [Header("Defaults")]
-    [SerializeField] private float defaultBGM = 0.8f;
-    [SerializeField] private float defaultSFX = 0.8f;
+    private float defaultBGM = 0.8f;
+    private float defaultSFX = 0.8f;
 
     private void Awake()
     {

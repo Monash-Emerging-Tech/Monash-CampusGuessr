@@ -514,6 +514,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2402564922177664401}
+  - component: {fileID: 9204801186266785985}
   m_Layer: 5
   m_Name: settings
   m_TagString: Untagged
@@ -542,6 +543,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &9204801186266785985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2119286108675313795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b833087cd804b418e0cdd0ac799e92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmSlider: {fileID: 722160572438788063}
+  sfxSlider: {fileID: 755467653654123485}
 --- !u!1 &2406874252736566355
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,6 +568,7 @@ GameObject:
   - component: {fileID: 6103998862949621120}
   - component: {fileID: 687895114660785816}
   - component: {fileID: 3048733506759565868}
+  - component: {fileID: 1540979879274913781}
   m_Layer: 5
   m_Name: mouse-sensitivity
   m_TagString: Untagged
@@ -619,6 +635,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1540979879274913781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2406874252736566355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0d1f4b40b360374584407b2f8948a12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivitySlider: {fileID: 6040275778323302633}
+  minSensitivity: 0.1
+  maxSensitivity: 10
+  defaultSensitivity: 5
+  rotateCameras: []
 --- !u!1 &2439486760993379464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1621,7 +1654,7 @@ GameObject:
   - component: {fileID: 9149919187823922634}
   - component: {fileID: 755467653654123485}
   m_Layer: 5
-  m_Name: Slider (1)
+  m_Name: effect-slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1693,10 +1726,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 8848292752955687437}
   m_HandleRect: {fileID: 5494308902477713532}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.0001
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.8
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1986,7 +2019,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5245375594881552751}
   - component: {fileID: 722160572438788063}
-  - component: {fileID: 8454034239075931381}
   m_Layer: 5
   m_Name: music-slider
   m_TagString: Untagged
@@ -2060,14 +2092,14 @@ MonoBehaviour:
   m_FillRect: {fileID: 4566156830970034174}
   m_HandleRect: {fileID: 8979365992934818894}
   m_Direction: 0
-  m_MinValue: 0
+  m_MinValue: 0.0001
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 0.8
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8454034239075931381}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: VolumeManager, Assembly-CSharp
         m_MethodName: SetVolume
         m_Mode: 1
@@ -2079,21 +2111,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8454034239075931381
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7202377480372442823}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b17fdc102bee7084c8b10d354434b449, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  volumeSlider: {fileID: 722160572438788063}
-  volumeType: 1
-  audioSources: []
 --- !u!1 &7238259649624947857
 GameObject:
   m_ObjectHideFlags: 0
