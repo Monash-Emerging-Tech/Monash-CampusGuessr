@@ -9307,37 +9307,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2130621127}
   m_Mesh: {fileID: 3861478300804232965, guid: fbb47162ae697412fb2955d8fcca4264, type: 3}
---- !u!1 &2144176603
-GameObject:
-  m_ObjectHideFlags: 8
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2144176604}
-  m_Layer: 0
-  m_Name: 'bean_bag (Missing Prefab with guid: ed6af2ba3cdfb6b49ae9d0d0b0b7b6a1)'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2144176604
-Transform:
-  m_ObjectHideFlags: 8
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2144176603}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 24.136, y: 0.519, z: -7.7628}
-  m_LocalScale: {x: 0.3634483, y: 0.3634483, z: 0.3634483}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -9379,7 +9348,6 @@ SceneRoots:
   - {fileID: 1971861874}
   - {fileID: 150808144}
   - {fileID: 467547772}
-  - {fileID: 2144176604}
   - {fileID: 590390091}
   - {fileID: 394092219}
   - {fileID: 1269502820}
