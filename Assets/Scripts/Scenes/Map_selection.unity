@@ -4856,6 +4856,7 @@ GameObject:
   - component: {fileID: 785214948}
   - component: {fileID: 785214947}
   - component: {fileID: 785214946}
+  - component: {fileID: 785214949}
   m_Layer: 5
   m_Name: select button
   m_TagString: Untagged
@@ -4925,7 +4926,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 785214947}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 785214949}
+        m_TargetAssemblyTypeName: MapButtonClick, Assembly-CSharp
+        m_MethodName: OnButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &785214947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4964,6 +4977,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785214944}
   m_CullTransparentMesh: 1
+--- !u!114 &785214949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 785214944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24472bf6fbda2584faf442d8b5a1b629, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetScene: MenuScene_MonashCollege
+  mapPackName: Monash College
+  mapCenterLat: -37.82005
+  mapCenterLng: 144.9494
+  mapZoom: 18
 --- !u!1 &815786343
 GameObject:
   m_ObjectHideFlags: 0
@@ -7096,6 +7126,7 @@ GameObject:
   - component: {fileID: 1241676432}
   - component: {fileID: 1241676431}
   - component: {fileID: 1241676430}
+  - component: {fileID: 1241676433}
   m_Layer: 5
   m_Name: select button
   m_TagString: Untagged
@@ -7165,7 +7196,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1241676431}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1241676433}
+        m_TargetAssemblyTypeName: MapButtonClick, Assembly-CSharp
+        m_MethodName: OnButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1241676431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7204,6 +7247,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1241676428}
   m_CullTransparentMesh: 1
+--- !u!114 &1241676433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241676428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24472bf6fbda2584faf442d8b5a1b629, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetScene: MenuScene_MonashClayton
+  mapPackName: Outside Living
+  mapCenterLat: -37.9106
+  mapCenterLng: 145.1361
+  mapZoom: 16
 --- !u!1 &1244819260
 GameObject:
   m_ObjectHideFlags: 0

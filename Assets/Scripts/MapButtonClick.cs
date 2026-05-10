@@ -23,4 +23,8 @@ public class MapButtonClick : MonoBehaviour
         
         SceneManager.LoadScene(targetScene);
     }
+    public void OnButtonClick()
+    {
+        OnMouseDown();
+    }
 }
