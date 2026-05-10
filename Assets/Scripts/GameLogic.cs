@@ -42,9 +42,17 @@ public class GameLogic : MonoBehaviour
     private bool isGameActive = false;
     private bool isRoundActive = false;
     private bool skipNextRoundWait = false;
+    private int? queuedNextLocationId = null;
+    private int preloadTriggeredForRound = -1; // Tracks which round has already triggered next round preload
+    private Coroutine preloadNextLocationCoroutine;
+    private Coroutine startRoundCoroutine;
 
     // MapPack management
     private int resolvedMapPackId = 2; // Default to Monash 101
+    private float pendingMapCenterLat = -37.9106f;
+    private float pendingMapCenterLng = 145.1361f;
+    private int pendingMapZoom = 16;
+    private int pendingCampusId = 159;
 
     private Dictionary<int, LocationManager.MapPack> allMapPacks;
 
@@ -172,8 +180,10 @@ public class GameLogic : MonoBehaviour
             LogDebug("Started in MenuScene_MonashClayton - Map hidden");
         }
 
-        // Initialize game (only if not in MenuScene_MonashClayton)
-        if (currentScene.name != "MenuScene_MonashClayton")
+        // Initialise game only in actual game scenes
+        if (currentScene.name != "MenuScene_MonashClayton" 
+            && currentScene.name != "MenuScene_MonashCollege"
+            && currentScene.name != "Map_selection")
         {
             InitializeGame();
         }
@@ -277,36 +287,44 @@ public class GameLogic : MonoBehaviour
         else if (scene.name == "GameScene")
         {
             LogDebug("GameScene loaded - Initializing game...");
-
-            // Ensure MapInteractionManager is available
-            EnsureMapManager();
-
-            // Initialize game state
-            isGameActive = true;
-            inGame = true;
-            currentRound = 1;  // Start at round 1, not 0
-            currentScore = 0;
-            isGuessing = true;
-            isRoundActive = false;  // Ensure round is not active so nextRound can proceed
-            scoreData.ResetAll();
-
-            // Ensure map pack is resolved before starting round
-            if (locationManager != null && resolvedMapPackId == -1)
-            {
-                if (!ResolveMapPackId())
-                {
-                    LogError("Failed to resolve MapPack in OnSceneLoaded - cannot start game");
-                    return;
-                }
-            }
-
-            // Start the first round (which will also show the map)
-            nextRound();
-
-            LogDebug("GameScene loaded - Map shown, game initialized");
+            StartCoroutine(InitialiseGameScene());
         }
     }
+    
+    /// <summary>
+    /// Initialises the game scene - resolves map pack, loads textures, then starts the first round
+    /// </summary>
+    private IEnumerator InitialiseGameScene()
+    {
+        EnsureMapManager();
 
+        isGameActive = true;
+        inGame = true;
+        currentRound = 1;
+        currentScore = 0;
+        isGuessing = true;
+        isRoundActive = false;
+        scoreData.ResetAll();
+        preloadTriggeredForRound = -1;
+
+        if (locationManager == null || !ResolveMapPackId())
+        {
+            LogError("Failed to resolve MapPack in InitialiseGameScene - cannot start game");
+            yield break;
+        }
+
+        locationManager.SetCurrentMapPack(resolvedMapPackId);
+        queuedNextLocationId = null;
+        QueueNextRoundLocationAndPreload(locationManager.GetCurrentMapPack(), null);
+        if (queuedNextLocationId.HasValue)
+        {
+            yield return StartCoroutine(locationManager.EnsureLocationMaterialLoaded(queuedNextLocationId.Value));
+        }
+        if (MapInteractionManager.Instance != null)
+            MapInteractionManager.Instance.SetMapCenter(pendingMapCenterLat, pendingMapCenterLng, pendingMapZoom, pendingCampusId);
+        nextRound();
+        LogDebug("GameScene loaded - first image prepared, game initialized");
+    }
     #endregion
 
     #region Game Initialization
@@ -332,11 +350,26 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     public void RestartGame()
     {
+        StartCoroutine(RestartGameRoutine());
+    }
+
+    private IEnumerator RestartGameRoutine()
+    {
         currentRound = 1;
         currentScore = 0;
         isGameActive = true;
         isRoundActive = false;
+        isGuessing = true;
         inGame = true;
+        scoreData.ResetAll();
+        queuedNextLocationId = null;
+        preloadTriggeredForRound = -1;
+
+        if (startRoundCoroutine != null)
+        {
+            StopCoroutine(startRoundCoroutine);
+            startRoundCoroutine = null;
+        }
 
         // Reset map manager - use singleton to ensure consistency
         if (MapInteractionManager.Instance != null)
@@ -348,6 +381,20 @@ public class GameLogic : MonoBehaviour
         if (resultsUI != null)
         {
             resultsUI.SetActive(false);
+        }
+
+        if (locationManager == null || !ResolveMapPackId())
+        {
+            LogError("RestartGame failed - unable to resolve map pack.");
+            yield break;
+        }
+
+        locationManager.SetCurrentMapPack(resolvedMapPackId);
+        QueueNextRoundLocationAndPreload(locationManager.GetCurrentMapPack(), null);
+        if (queuedNextLocationId.HasValue)
+        {
+            // Play again transitions to the next round immediately
+            StartCoroutine(locationManager.EnsureLocationMaterialLoaded(queuedNextLocationId.Value));
         }
 
         LogDebug("Game restarted");
@@ -383,59 +430,83 @@ public class GameLogic : MonoBehaviour
             MapInteractionManager.Instance.ClearWebMapState();
         }
 
-        // Get random location from location manager
-        if (locationManager != null)
+        if (startRoundCoroutine != null)
         {
-            // Resolve MapPack name to ID if not already resolved
-            if (resolvedMapPackId == -1 && !ResolveMapPackId())
+            StopCoroutine(startRoundCoroutine);
+        }
+
+        startRoundCoroutine = StartCoroutine(StartRoundWithLocationLoading());
+    }
+
+    /// <summary>
+    /// Starts a round using queued-preload flow:
+    /// Pick queued location if available (otherwise random)
+    /// Ensure its material is loaded
+    /// Apply skybox + set actual map location + open guessing UI.
+    /// </summary>
+    private IEnumerator StartRoundWithLocationLoading()
+    {
+        if (!locationManager || resolvedMapPackId == -1 && !ResolveMapPackId())
+        {
+            LogError("Failed to resolve MapPack - cannot start round");
+            isRoundActive = false;
+            yield break;
+        }
+
+        locationManager.SetCurrentMapPack(resolvedMapPackId);
+        var currentMapPack = locationManager.GetCurrentMapPack();
+        LogDebug($"MapPack set to: {currentMapPack.Name} (ID: {resolvedMapPackId})");
+
+        int locationId;
+        if (queuedNextLocationId.HasValue)
+        {
+            locationId = queuedNextLocationId.Value;
+            queuedNextLocationId = null;
+        }
+        else
+        {
+            if (!TryPickRandomLocationId(currentMapPack, GetUsedLocationIds(), out locationId))
             {
-                LogError("Failed to resolve MapPack - cannot start round");
-                return;
+                LogError("No locations available for this map pack.");
+                isRoundActive = false;
+                yield break;
+            }
+        }
+
+        // Block round start until this location's material is ready
+        yield return StartCoroutine(locationManager.EnsureLocationMaterialLoaded(locationId));
+
+        if (!locationManager.TryGetLocationById(locationId, out var location))
+        {
+            LogError($"Failed to get location data for ID {locationId}.");
+            isRoundActive = false;
+            yield break;
+        }
+
+        // Apply visuals and persist this round's location for scoring/breakdown.
+        locationManager.ApplyLocationToSkybox(location);
+        scoreData.AddLocation(location);
+
+        if (!string.IsNullOrEmpty(location.Name))
+        {
+            // Ensure map manager reference is valid before setting actual location.
+            if (mapManager == null)
+            {
+                EnsureMapManager();
             }
 
-            locationManager.SetCurrentMapPack(resolvedMapPackId);
-            var currentMapPack = locationManager.GetCurrentMapPack();
-            LogDebug($"MapPack set to: {currentMapPack.Name} (ID: {resolvedMapPackId})");
-
-            locationManager.SelectRandomLocation();
-
-            LocationManager.Location location;
-
-            // Make it so the same location can't be selected twice in the same session
-
-
-            do
+            if (mapManager != null)
             {
-                locationManager.SelectRandomLocation();
-                location = locationManager.GetCurrentLocation();
-                LogDebug($"Attempt Location Change - Location: {location.Name}");
-            } while (scoreData.PreviousLocations.Contains(location));
-
-            scoreData.AddLocation(location);
-
-            Debug.Log(scoreData.PreviousLocations);
-
-            if (!string.IsNullOrEmpty(location.Name))
-            {
-                // Ensure map manager reference is valid before setting actual location
-                if (mapManager == null)
-                {
-                    EnsureMapManager();
-                }
-
-                if (mapManager != null)
-                {
-                    LogDebug("nextRound(): calling SetActualLocation");
-                    // Use singleton instance to ensure SubmitGuess (called from JS) operates on the same instance
-                    MapInteractionManager.Instance.SetActualLocation(location.latitude, location.longitude, location.zLevel);
-                }
-                else
-                {
-                    LogError("MapInteractionManager not found when setting actual location; score will be unavailable.");
-                }
-
-                LogDebug($"Round {currentRound} started - Location: {location.Name} | latitude:{location.latitude}, longitude:{location.longitude}, zLevel={location.zLevel}");
+                LogDebug("nextRound(): calling SetActualLocation");
+                // Use singleton instance to ensure SubmitGuess (called from JS) operates on the same instance
+                MapInteractionManager.Instance.SetActualLocation(location.latitude, location.longitude, location.zLevel);
             }
+            else
+            {
+                LogError("MapInteractionManager not found when setting actual location; score will be unavailable.");
+            }
+
+            LogDebug($"Round {currentRound} started - Location: {location.Name} | latitude:{location.latitude}, longitude:{location.longitude}, zLevel={location.zLevel}");
         }
 
         // Show map after actual location is set
@@ -612,6 +683,8 @@ public class GameLogic : MonoBehaviour
             MapInteractionManager.Instance.SetWebGuessingState(false);
             MapInteractionManager.Instance.SetWebMapSize("mm-size-round-end");
         }
+
+        TryPreloadNextRoundAfterGuess();
         // The score calculation will be handled by OnScoreCalculated
     }
 
@@ -722,7 +795,12 @@ public class GameLogic : MonoBehaviour
 
         mapPackName = name;
         resolvedMapPackId = id;
-        LogDebug($"MapPack set to: {name} (ID: {id})");
+
+        var dict = locationManager.GetMapPackDict();
+        if (dict != null && dict.ContainsKey(id))
+            pendingCampusId = dict[id].campusId != 0 ? dict[id].campusId : 159;
+
+        LogDebug($"MapPack set to: {name} (ID: {id}, campusId: {pendingCampusId})");
 
         // Fire MapPack changed event
         OnMapPackChanged?.Invoke(name);
@@ -759,7 +837,12 @@ public class GameLogic : MonoBehaviour
         }
 
         resolvedMapPackId = id;
-        LogDebug($"GameLogic: MapPack '{mapPackName}' resolved to ID: {id}");
+
+        var dict = locationManager.GetMapPackDict();
+        if (dict != null && dict.ContainsKey(id))
+            pendingCampusId = dict[id].campusId != 0 ? dict[id].campusId : 159;
+
+        LogDebug($"GameLogic: MapPack '{mapPackName}' resolved to ID: {id}, campusId: {pendingCampusId}");
 
         // Fire MapPack changed event (only if this is not the initial startup resolution)
         if (mapPackName != "all" || resolvedMapPackId != 0) // Avoid firing for default startup
@@ -805,7 +888,117 @@ public class GameLogic : MonoBehaviour
             LogError("LocationManager failed to initialize after waiting. Check LocationManager component.");
         }
     }
+    /// <summary>
+    /// Sets the pending map center to be applied when the game scene loads
+    /// </summary>
+    public void SetPendingMapCenter(float lat, float lng, int zoom)
+    {
+        pendingMapCenterLat = lat;
+        pendingMapCenterLng = lng;
+        pendingMapZoom = zoom;
+        LogDebug($"Pending map center set to: {lat}, {lng}, zoom: {zoom}");
+    }
 
+    /// <summary>
+    /// Returns the set of location IDs already used in the current game session.
+    /// Used to exclude previously played locations from random selection.
+    /// </summary>
+    private HashSet<int> GetUsedLocationIds()
+    {
+        if (scoreData == null || scoreData.PreviousLocations == null)
+        {
+            return new HashSet<int>();
+        }
+        return scoreData.PreviousLocations.Select(loc => loc.ID).ToHashSet();
+    }
+
+    /// <summary>
+    /// Tries to pick a random location ID from the map pack.
+    /// If exclusions remove all locations, it falls back to the full map pack.
+    /// </summary>
+    private bool TryPickRandomLocationId(LocationManager.MapPack mapPack, HashSet<int> excludedIds, out int locationId)
+    {
+        locationId = -1;
+        // Check if map pack has locations
+        var locations = locationManager.GetLocationsFromMapPack(mapPack);
+        if (locations.Count == 0)
+        {
+            return false;
+        }
+
+        var candidates = (excludedIds == null || excludedIds.Count == 0)
+            ? locations
+            : locations.Where(loc => !excludedIds.Contains(loc.ID)).ToList();
+
+        if (candidates.Count == 0)
+        {
+            candidates = locations;
+        }
+
+        int index = UnityEngine.Random.Range(0, candidates.Count);
+        locationId = candidates[index].ID;
+        return true;
+    }
+
+    /// <summary>
+    /// Picks and stores the next round location ID, excluding already used/current/queued IDs,
+    /// then starts background material preload for that location if not already loaded.
+    /// </summary>
+    private void QueueNextRoundLocationAndPreload(LocationManager.MapPack mapPack, int? currentRoundLocationId)
+    {
+        var excluded = GetUsedLocationIds();
+        // Exclude current round location
+        if (currentRoundLocationId.HasValue)
+        {
+            excluded.Add(currentRoundLocationId.Value);
+        }
+        if (queuedNextLocationId.HasValue)
+        {
+            excluded.Add(queuedNextLocationId.Value);
+        }
+
+        if (!TryPickRandomLocationId(mapPack, excluded, out int nextLocationId))
+        {
+            queuedNextLocationId = null;
+            return;
+        }
+
+        queuedNextLocationId = nextLocationId;
+        LogDebug($"Queued next location ID: {nextLocationId}");
+
+        // Material already loaded
+        if (locationManager.IsLocationMaterialLoaded(nextLocationId))
+        {
+            return;
+        }
+
+        LogDebug($"Background preloading next location ID: {nextLocationId}");
+        preloadNextLocationCoroutine = StartCoroutine(locationManager.EnsureLocationMaterialLoaded(nextLocationId));
+    }
+
+    /// <summary>
+    /// Triggers preload of the next round location after a guess is submitted.
+    /// Skips on final round or duplicate trigger in same round.
+    /// </summary>
+    private void TryPreloadNextRoundAfterGuess()
+    {
+        if (currentRound >= totalRounds)
+        {
+            return;
+        }
+        if (preloadTriggeredForRound == currentRound)
+        {
+            return;
+        }
+
+        var currentMapPack = locationManager.GetCurrentMapPack();
+        var currentLocation = locationManager.GetCurrentLocation();
+        int? currentLocationId = string.IsNullOrEmpty(currentLocation.Name) ? null : currentLocation.ID;
+
+        QueueNextRoundLocationAndPreload(currentMapPack, currentLocationId);
+        preloadTriggeredForRound = currentRound;
+        LogDebug($"Triggered next round image preload from guess submission (round {currentRound}).");
+    }
     #endregion
 
     #region Debug Logging

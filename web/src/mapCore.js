@@ -71,6 +71,10 @@ export function getMapboxMap(map) {
 
 // --------------------------------------------------------------- MAZE MAP INITIALIZATION
 
+// Default floor (zLevel) to show when entering each campus.
+// If a third campus is added, this table needs a manual update.
+const CAMPUS_DEFAULT_ZLEVEL = { 159: 1, 413: 10 };
+
 function isMazeMapReady() {
   if (typeof mazemap !== "undefined" && typeof mazemap.Map === "function")
     return true;
@@ -121,17 +125,30 @@ export function initializeMazeMap(onMapClick) {
     console.error("Maze Maps failed to load after 10 attempts");
     return;
   }
+
+  // Cache the click handler so reinit (campus switch) can reuse it without Unity re-registering.
+  if (onMapClick) window._mazeMapClickHandler = onMapClick;
+  const handler = window._mazeMapClickHandler;
+
   try {
     const MazeLibrary = window.Maze || mazemap;
+    const pendingCenter = window.pendingMapCenter;
+    const campusId = pendingCenter ? (pendingCenter.campusId || 159) : 159;
+    const lat = pendingCenter ? pendingCenter.lat : -37.9106;
+    const lng = pendingCenter ? pendingCenter.lng : 145.1361;
+    const zoom = pendingCenter ? pendingCenter.zoom : 16;
+
     const map = new MazeLibrary.Map({
       container: "map",
-      campuses: 159,
-      center: { lng: 145.1361, lat: -37.9106 },
-      zoom: 16,
+      campuses: campusId,
+      center: { lng, lat },
+      zoom,
       minZLevel: 0,
       maxZLevel: 12,
     });
     window.mazeMapInstance = map;
+    window.currentMapView = { lat, lng, zoom, campusId, zLevel: CAMPUS_DEFAULT_ZLEVEL[campusId] ?? 1 };
+
     map.on("load", () => {
       console.log("Maze Maps ready for interaction");
     });
@@ -141,8 +158,8 @@ export function initializeMazeMap(onMapClick) {
         console.log("Map click ignored - guessing disabled");
         return;
       }
-      if (typeof onMapClick === "function") {
-        onMapClick(map, e.lngLat, map.zLevel);
+      if (typeof handler === "function") {
+        handler(map, e.lngLat, map.zLevel);
       }
     });
   } catch (error) {

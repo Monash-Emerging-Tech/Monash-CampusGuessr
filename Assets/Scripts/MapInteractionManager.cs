@@ -34,6 +34,8 @@ public class MapInteractionManager : MonoBehaviour
     private static extern void showLoading(bool show);
     [System.Runtime.InteropServices.DllImport("__Internal")]
     private static extern void addMarkerFromUnity(float lat, float lng, string label, string type);
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern void setMapPackViewFromUnity(int campusId, float lat, float lng, int zoom);
 #endif
     [Header("Map Settings")]
     [SerializeField] private bool enableMapOnStart = false;
@@ -431,7 +433,18 @@ public class MapInteractionManager : MonoBehaviour
         LogDebug("Map state would be cleared on JavaScript");
 #endif
     }
-
+    
+/// <summary>
+/// Sets the map center, zoom level, and campus (triggers MazeMap reinit if campus changes).
+/// </summary>
+public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159)
+{
+#if UNITY_WEBGL && !UNITY_EDITOR
+    setMapPackViewFromUnity(campusId, lat, lng, zoom);
+#else
+    LogDebug($"Map center would be set to: {lat}, {lng}, zoom: {zoom}, campusId: {campusId}");
+#endif
+}
     #endregion
 
     #region Scoring System

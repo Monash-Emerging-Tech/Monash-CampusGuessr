@@ -132,10 +132,8 @@ function cycleSize(direction) {
 function resetMapView() {
   const map = window.mazeMapInstance;
   if (!map || typeof map.flyTo !== "function") return;
-  map.flyTo({
-    center: { lng: 145.1361, lat: -37.9106 },
-    zoom: 16,
-  });
+  const view = window.currentMapView || { lng: 145.1361, lat: -37.9106, zoom: 16 };
+  map.flyTo({ center: { lng: view.lng, lat: view.lat }, zoom: view.zoom });
 }
 
 function updateControlDisabled() {

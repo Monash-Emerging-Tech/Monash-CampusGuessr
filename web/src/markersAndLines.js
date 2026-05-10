@@ -249,4 +249,12 @@ export function clearMapStateFromUnity() {
     map._guessLineLayer = null;
     map._guessLineLayerZ = null;
   }
+
+  const view = window.currentMapView;
+  if (view && typeof map.jumpTo === "function") {
+    map.jumpTo({ center: { lng: view.lng, lat: view.lat }, zoom: view.zoom });
+    if (typeof view.zLevel === "number") {
+      try { map.setZLevel(view.zLevel); } catch (e) {}
+    }
+  }
 }

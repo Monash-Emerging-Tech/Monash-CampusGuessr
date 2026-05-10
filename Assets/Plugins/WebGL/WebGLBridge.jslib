@@ -38,6 +38,10 @@ mergeInto(LibraryManager.library, {
     if (typeof window.addMarkerFromUnity === "function")
       window.addMarkerFromUnity(lat, lng, label, type);
   },
+  setMapPackViewFromUnity: function(campusId, lat, lng, zoom) {
+    if (typeof window.mmSetMapPackView === "function")
+      window.mmSetMapPackView(campusId, lat, lng, zoom);
+  },
   showTooltipFromWeb: function (seconds) {
     if (
       typeof window.unityInstance !== "undefined" &&

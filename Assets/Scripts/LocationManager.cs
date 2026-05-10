@@ -55,6 +55,7 @@ public class LocationManager : MonoBehaviour
     {
         public int ID;
         public string Name;
+        public int campusId; // MazeMap campus ID. Falls back to 159 (Clayton) in GameLogic if 0.
         public List<int> locationIDs;
         public string bucketSubdirectory; // Subdirectory in R2 bucket for this MapPack (e.g., "monash-101"). Leave empty for root level.
     }
@@ -88,6 +89,8 @@ public class LocationManager : MonoBehaviour
     private MapPack currentMapPack;
     private Location currentLocation;
     private Dictionary<int, bool> locationLoadingStatus; // Track which locations are currently loading
+    // Tracks locations currently being downloaded to prevent duplicate concurrent loads
+    private readonly HashSet<int> activeMaterialLoads = new HashSet<int>();
     private int totalLocationsToLoad = 0;
     private int locationsLoadedCount = 0;
 
@@ -109,6 +112,15 @@ public class LocationManager : MonoBehaviour
     public string GetCurrentMapPackName() => currentMapPack.Name;
     public Dictionary<int, Location> GetLocationDict() => locationDict;
     public Dictionary<int, MapPack> GetMapPackDict() => mapPackDict;
+    public bool IsLocationMaterialLoaded(int locationId) =>
+        locationDict.TryGetValue(locationId, out var location) &&
+        location.LocationMaterial != null;
+
+    public bool TryGetLocationById(int locationId, out Location location)
+    {
+        location = default;
+        return locationDict.TryGetValue(locationId, out location);
+    }
 
     /// <summary>
     /// Gets all available MapPack names
@@ -227,6 +239,24 @@ public class LocationManager : MonoBehaviour
 
         Debug.Log($"LocationManager: Location selected - ID:{selectedLocation.ID}, Name:{selectedLocation.Name}, latitude:{selectedLocation.latitude}, longitude:{selectedLocation.longitude}, z:{selectedLocation.zLevel}");
         SetCurrentLocation(selectedLocation);
+    }
+
+    /// <summary>
+    /// Applies a location's material to skybox if available, then sets it as current location.
+    /// </summary>
+    public void ApplyLocationToSkybox(Location location)
+    {
+        if (location.LocationMaterial == null)
+        {
+            Debug.LogError($"LocationManager: Material missing for '{location.Name}' (ID:{location.ID}), FileName:'{location.FileName}'");
+        }
+        else
+        {
+            RenderSettings.skybox = location.LocationMaterial;
+            DynamicGI.UpdateEnvironment();
+        }
+
+        SetCurrentLocation(location);
     }
 
     /// <summary>
@@ -350,7 +380,6 @@ public class LocationManager : MonoBehaviour
         }
 
         Debug.Log($"LocationManager: Loading from remote - base URL: {imageBaseUrl}");
-        CoroutineRunner.Instance.StartCoroutine(AssignLocationMaterialsFromRemote());
     }
 
     /// <summary>
@@ -421,6 +450,63 @@ public class LocationManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Fetches images from remote URL in specified mappack, creates skybox materials. 
+    /// Per-location fallback to local Resources if enabled.
+    /// Flow: For each location: try remote, then if fail and useLocalFallback, try Resources.
+    /// WHEN ALL REMOTE: Remove the fallback block; simplify to remote-only.
+    /// </summary> 
+    public IEnumerator LoadMaterialsForMapPack(MapPack mapPack)
+    {
+        var locations = GetLocationsFromMapPack(mapPack);
+        locationLoadingStatus = new Dictionary<int, bool>();
+        totalLocationsToLoad = locations.Count;
+        locationsLoadedCount = 0;
+
+        foreach (Location location in locations)
+        {
+            locationLoadingStatus[location.ID] = false;
+            yield return LoadLocationMaterialFromRemote(location);
+        }
+    }
+
+    /// <summary>
+    /// Ensures a single location has a material loaded.
+    /// - If already loaded, returns immediately.
+    /// - If another coroutine is already loading it, waits for that load to finish.
+    /// - Otherwise loads from remote (and optional local fallback).
+    /// </summary>
+    public IEnumerator EnsureLocationMaterialLoaded(int locationId)
+    {
+        if (!TryGetLocationById(locationId, out var location))
+        {
+            Debug.LogError($"LocationManager: EnsureLocationMaterialLoaded failed, location ID {locationId} not found.");
+            yield break;
+        }
+        if (location.LocationMaterial != null)
+        {
+            yield break;
+        }
+
+        locationLoadingStatus ??= new Dictionary<int, bool>();
+
+        if (activeMaterialLoads.Contains(locationId))
+        {
+            while (activeMaterialLoads.Contains(locationId))
+            {
+                yield return null;
+            }
+            yield break;
+        }
+        activeMaterialLoads.Add(locationId);
+        if (!locationLoadingStatus.ContainsKey(locationId))
+        {
+            locationLoadingStatus[locationId] = false;
+        }
+
+        yield return LoadLocationMaterialFromRemote(location);
+        activeMaterialLoads.Remove(locationId);
+    }
+    /// <summary>
     /// Gets the bucket subdirectory for a location by finding which MapPack it belongs to
     /// Only uses specific MapPacks (skips "all" since it's just a logical grouping, not a bucket subdirectory)
     /// </summary>
@@ -470,7 +556,8 @@ public class LocationManager : MonoBehaviour
             imageUrl = $"{imageBaseUrl.TrimEnd('/')}/{subdirectory.Trim('/')}/{location.FileName}{imageFileExtension}";
         }
         
-        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageUrl))
+        // Use nonReadable textures to reduce lagginess.
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageUrl, true))
         {
             yield return www.SendWebRequest();
 
