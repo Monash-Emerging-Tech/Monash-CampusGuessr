@@ -9667,6 +9667,7 @@ GameObject:
   - component: {fileID: 903128357}
   - component: {fileID: 903128356}
   - component: {fileID: 903128355}
+  - component: {fileID: 903128358}
   m_Layer: 5
   m_Name: 'Settings '
   m_TagString: Untagged
@@ -9757,6 +9758,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &903128358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903128353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe53a3ce5cc9a0d49a44cd38b038ce0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingsComponent: {fileID: 2119286108675313795, guid: eca17b3884c8e38459c3f6e3330d9d92, type: 3}
+  settingsButton: {fileID: 1246981009}
 --- !u!1 &931076091
 GameObject:
   m_ObjectHideFlags: 0
@@ -13893,6 +13908,7 @@ GameObject:
   - component: {fileID: 1246981011}
   - component: {fileID: 1246981010}
   - component: {fileID: 1246981009}
+  - component: {fileID: 1246981012}
   m_Layer: 5
   m_Name: TempStartButton
   m_TagString: Untagged
@@ -13909,7 +13925,7 @@ RectTransform:
   m_GameObject: {fileID: 1246981007}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -57}
-  m_LocalScale: {x: 3.3247254, y: 8, z: 1}
+  m_LocalScale: {x: 3.3247254, y: 11, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 903128354}
@@ -13962,19 +13978,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1246981010}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 903128353}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
+      m_Calls: []
 --- !u!114 &1246981010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13987,7 +13991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: c24a1bc27c393fd4a92c095d63b5a0fc, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -14013,6 +14017,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1246981007}
   m_CullTransparentMesh: 1
+--- !u!114 &1246981012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246981007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49343c21b7e00744c9376c00ad7c0f96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1273348077
 GameObject:
   m_ObjectHideFlags: 0
@@ -17060,6 +17076,7 @@ GameObject:
   - component: {fileID: 1560417531}
   - component: {fileID: 1560417530}
   - component: {fileID: 1560417529}
+  - component: {fileID: 1560417532}
   m_Layer: 5
   m_Name: TempStartButton
   m_TagString: Untagged
@@ -17180,6 +17197,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1560417527}
   m_CullTransparentMesh: 1
+--- !u!114 &1560417532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560417527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49343c21b7e00744c9376c00ad7c0f96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1560876897
 GameObject:
   m_ObjectHideFlags: 0

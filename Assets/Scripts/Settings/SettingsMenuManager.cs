@@ -13,33 +13,18 @@ public class SettingsMenuManager : MonoBehaviour
 {
     [Header("Settings Configuration")]
     [SerializeField] private GameObject settingsComponent;
-    [SerializeField] private Transform canvasParent;
     [SerializeField] private Button settingsButton;
-    [SerializeField] private Button closeButton;
     
     [Header("Overlay Settings")]
-    [SerializeField] private bool pauseGameWhenOpen = true;
-    [SerializeField] private KeyCode toggleKey = KeyCode.Escape;
+    private bool pauseGameWhenOpen = true;
+    private KeyCode toggleKey = KeyCode.Escape;
     
     private GameObject settingsInstance;
     private bool isSettingsOpen = false;
-    
+    private Button closeButton;
+
     void Start()
     {
-        // Auto-find canvas if not assigned
-        if (canvasParent == null)
-        {
-            Canvas canvas = FindFirstObjectByType<Canvas>();
-            if (canvas != null)
-            {
-                canvasParent = canvas.transform;
-            }
-            else
-            {
-                Debug.LogError("No Canvas found! Please assign a Canvas as the parent for the settings overlay.", this);
-            }
-        }
-        
         // Auto-wire button if attached to the same GameObject
         if (settingsButton == null)
         {
@@ -92,7 +77,7 @@ public class SettingsMenuManager : MonoBehaviour
     /// </summary>
     public void OpenSettings()
     {
-        if (settingsComponent == null || canvasParent == null)
+        if (settingsComponent == null)
         {
             Debug.LogError("Cannot open settings: Missing prefab or canvas parent reference.", this);
             return;
@@ -101,8 +86,7 @@ public class SettingsMenuManager : MonoBehaviour
         if (settingsInstance == null)
         {
             // Instantiate the settings prefab
-            settingsInstance = Instantiate(settingsComponent, canvasParent);
-            
+            settingsInstance = Instantiate(settingsComponent);
             // Find and wire up close button in the instantiated prefab
             FindAndWireCloseButton();
         }
@@ -173,12 +157,20 @@ public class SettingsMenuManager : MonoBehaviour
     }
     
     /// <summary>
+    /// Check if settings menu is currently open
+    /// </summary>
+    public bool IsSettingsOpen()
+    {
+        return isSettingsOpen;
+    }
+
+    /// <summary>
     /// Finds and wires up close button in the settings prefab
     /// </summary>
     private void FindAndWireCloseButton()
     {
         if (settingsInstance == null) return;
-        
+
         // Try to find close button by name
         Transform closeButtonTransform = settingsInstance.transform.Find("CloseButton");
         if (closeButtonTransform == null)
@@ -190,7 +182,7 @@ public class SettingsMenuManager : MonoBehaviour
                 closeButtonTransform = settingsInstance.transform.Find("X");
             }
         }
-        
+
         // If still not found, search in children
         if (closeButtonTransform == null)
         {
@@ -204,7 +196,7 @@ public class SettingsMenuManager : MonoBehaviour
                 }
             }
         }
-        
+
         // Wire up the close button
         if (closeButtonTransform != null)
         {
@@ -220,7 +212,7 @@ public class SettingsMenuManager : MonoBehaviour
             Debug.LogWarning("No close button found in settings prefab. You may need to manually call CloseSettings() or assign the close button reference.");
         }
     }
-    
+
     /// <summary>
     /// Manually set the close button reference (call this if auto-detection fails)
     /// </summary>
@@ -230,23 +222,15 @@ public class SettingsMenuManager : MonoBehaviour
         {
             closeButton.onClick.RemoveListener(CloseSettings);
         }
-        
+
         closeButton = closeBtn;
-        
+
         if (closeButton != null)
         {
             closeButton.onClick.AddListener(CloseSettings);
         }
     }
-    
-    /// <summary>
-    /// Check if settings menu is currently open
-    /// </summary>
-    public bool IsSettingsOpen()
-    {
-        return isSettingsOpen;
-    }
-    
+
     void OnDestroy()
     {
         // Clean up button listeners
@@ -254,13 +238,10 @@ public class SettingsMenuManager : MonoBehaviour
         {
             settingsButton.onClick.RemoveListener(ToggleSettings);
         }
-        
         if (closeButton != null)
         {
             closeButton.onClick.RemoveListener(CloseSettings);
         }
-        
-        // Resume game time in case this object is destroyed while settings are open
         if (pauseGameWhenOpen && isSettingsOpen)
         {
             Time.timeScale = 1f;
