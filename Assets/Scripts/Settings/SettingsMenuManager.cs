@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /***
@@ -130,7 +131,10 @@ public class SettingsMenuManager : MonoBehaviour
         }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-        Application.ExternalCall("showMapFromUnity");
+        if (SceneManager.GetActiveScene().name == "GameScene")
+        {
+            Application.ExternalCall("showMapFromUnity");
+        }
 #endif
         
         Debug.Log("Settings menu closed.");
