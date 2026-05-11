@@ -171,7 +171,7 @@ public class GameLogic : MonoBehaviour
 
         // Check current scene and hide map if we're in MenuScene_MonashClayton
         Scene currentScene = SceneManager.GetActiveScene();
-        if (currentScene.name == "MenuScene_MonashClayton")
+        if (currentScene.name == CampusDatabase.Campuses[CampusType.Clayton])
         {
             if (MapInteractionManager.Instance != null)
             {
@@ -181,8 +181,8 @@ public class GameLogic : MonoBehaviour
         }
 
         // Initialise game only in actual game scenes
-        if (currentScene.name != "MenuScene_MonashClayton" 
-            && currentScene.name != "MenuScene_MonashCollege"
+        if (currentScene.name != CampusDatabase.Campuses[CampusType.Clayton]
+            && currentScene.name != CampusDatabase.Campuses[CampusType.College]
             && currentScene.name != "Map_selection")
         {
             InitializeGame();
@@ -261,6 +261,7 @@ public class GameLogic : MonoBehaviour
             MapInteractionManager.Instance.HideMap();
         }
 
+
         LogDebug("Returning to menu - game state reset");
         
         // Load menu scene
@@ -275,7 +276,7 @@ public class GameLogic : MonoBehaviour
         Debug.Log("Scene loaded: " + scene.name);
 
         // Hide map when MenuScene_MonashClayton is loaded
-        if (scene.name == "MenuScene_MonashClayton")
+        if (scene.name == CampusDatabase.Campuses[CampusType.Clayton])
         {
             if (MapInteractionManager.Instance != null)
             {
