@@ -4,8 +4,12 @@
  * ===============================
 */
 
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
+using static UnityEngine.Rendering.DebugUI;
 
 public class AudioManager : MonoBehaviour
 {
@@ -25,6 +29,9 @@ public class AudioManager : MonoBehaviour
     private const string BGM_KEY = "bgmVolume";
     private const string SFX_KEY = "sfxVolume";
 
+    private const string BGM_PARAM = "BGMVolume";
+    private const string SFX_PARAM = "SFXVolume";
+
     private float currentBGM = 0.8f;
     private float currentSFX = 0.8f;
 
@@ -39,12 +46,17 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        LoadVolumes();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void Start()
     {
-        PlayMusic(gameplayMusic);
+        LoadVolumes();
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     public void PlayButtonClick()
@@ -91,7 +103,7 @@ public class AudioManager : MonoBehaviour
         currentBGM = value;
 
         audioMixer.SetFloat(
-            "BGMVolume",
+            BGM_PARAM,
             Mathf.Log10(Mathf.Max(value, 0.0001f)) * 20
         );
 
@@ -104,7 +116,7 @@ public class AudioManager : MonoBehaviour
         currentSFX = value;
 
         audioMixer.SetFloat(
-            "SFXVolume",
+            SFX_PARAM,
             Mathf.Log10(Mathf.Max(value, 0.0001f)) * 20
         );
 
@@ -117,10 +129,37 @@ public class AudioManager : MonoBehaviour
 
     private void LoadVolumes()
     {
-        currentBGM = PlayerPrefs.GetFloat(BGM_KEY, 0.8f);
-        currentSFX = PlayerPrefs.GetFloat(SFX_KEY, 0.8f);
+        currentBGM =
+            PlayerPrefs.GetFloat(BGM_KEY, 0.8f);
 
-        SetBGMVolume(currentBGM);
-        SetSFXVolume(currentSFX);
+        currentSFX =
+            PlayerPrefs.GetFloat(SFX_KEY, 0.8f);
+
+        audioMixer.SetFloat(
+             BGM_PARAM,
+             Mathf.Log10(Mathf.Max(currentBGM, 0.0001f)) * 20
+         );
+
+        audioMixer.SetFloat(
+            SFX_PARAM,
+            Mathf.Log10(Mathf.Max(currentSFX, 0.0001f)) * 20
+        );
+
+        Debug.Log($"Loaded audio settings: BGM={currentBGM}, SFX={currentSFX}");
     }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
+    {
+        string sceneName = scene.name;
+
+        // STOP music in map selection
+        if (scene.name == SceneNames.MAP_SELECTION)
+        {
+            StopMusic();
+            return;
+        }
+
+        PlayMusic(gameplayMusic);
+    }
+
 }
