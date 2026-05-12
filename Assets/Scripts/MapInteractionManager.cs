@@ -48,6 +48,7 @@ public class MapInteractionManager : MonoBehaviour
 
     [Header("Scoring Settings")]
     [SerializeField] private AnimationCurve scoreCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+    private float currentZLevelWeight = 0.5f; // Set per map pack
 
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
@@ -457,30 +458,22 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     /// <returns>Score from 0 to maxScore</returns>
     private (int score, int distance) CalculateScore(LocationData actual, LocationData guess)
     {
+        // New Scoring Method (considers Z-levels) 13/05/2026
         float distance = CalculateDistance(actual, guess);
-
-        // New Scoring Method (04/02)
-
         int score = ScoreDataScriptableObject.CalculateScore((int)distance);
 
+        // Apply z-level penalty
+        int zLevelDiff = Mathf.Abs(actual.zLevel - guess.zLevel);
+        if (zLevelDiff > 0)
+        {
+            float zPenalty = Mathf.Min(zLevelDiff * 0.25f * currentZLevelWeight, 1f);
+            float zModifier = 1f - zPenalty;
+            int preZScore = score;
+            score = Mathf.RoundToInt(score * zModifier);
+            LogDebug($"Z-level penalty applied: diff={zLevelDiff}, weight={currentZLevelWeight}, modifier={zModifier:F2}, score {preZScore} -> {score}");
+        }
 
-        // OLD SCORING METHOD
-        //// If guess is beyond max distance, return minimum score
-        //if (distance > maxGuessDistance)
-        //{
-        //    LogDebug($"Distance: {distance:F2}m exceeds max distance {maxGuessDistance}m - Score: {minScore}");
-        //    return (minScore, (int)distance);
-        //}
-
-        // Linear scoring: maxScore minus proportional distance
-        // float scoreRatio = 1f - (distance / maxGuessDistance);
-        // int score = Mathf.RoundToInt(maxScore * scoreRatio);
-
-        //// Ensure score doesn't go below minimum
-
-        //score = Mathf.Max(minScore, score);
-
-        LogDebug($"Distance: {distance:F2}m, Max Distance: {maxGuessDistance}m, Score: {score}");
+        LogDebug($"Distance: {distance:F2}m, Score: {score}");
         return (score, (int)distance);
     }
 
@@ -500,6 +493,15 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
         float lngDiff = (coord2.longitude - coord1.longitude) * 111000f * Mathf.Cos(coord1.latitude * Mathf.Deg2Rad);
 
         return Mathf.Sqrt(latDiff * latDiff + lngDiff * lngDiff);
+    }
+
+    /// <summary>
+    /// Sets the z-level weight for score penalty calculation (called when map pack changes)
+    /// </summary>
+    public void SetZLevelWeight(float weight)
+    {
+        currentZLevelWeight = Mathf.Clamp01(weight);
+        LogDebug($"Z-level weight set to: {currentZLevelWeight}");
     }
 
     #endregion

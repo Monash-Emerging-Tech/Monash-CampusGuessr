@@ -324,6 +324,16 @@ public class GameLogic : MonoBehaviour
         LogDebug($"[GameLogic] pendingMapCenterLat: {pendingMapCenterLat}, pendingMapCenterLng: {pendingMapCenterLng}");
         if (MapInteractionManager.Instance != null)
             MapInteractionManager.Instance.SetMapCenter(pendingMapCenterLat, pendingMapCenterLng, pendingMapZoom, pendingCampusId);
+            
+        // Pass z-level weight for current map pack
+        var dict = locationManager.GetMapPackDict();
+        if (dict != null && dict.ContainsKey(resolvedMapPackId) && MapInteractionManager.Instance != null)
+        {
+            float zWeight = dict[resolvedMapPackId].zLevelWeight;
+            MapInteractionManager.Instance.SetZLevelWeight(zWeight);
+            LogDebug($"Z-level weight set to {zWeight} for map pack '{mapPackName}'");
+        }
+        
         nextRound();
         LogDebug("GameScene loaded - first image prepared, game initialized");
     }
