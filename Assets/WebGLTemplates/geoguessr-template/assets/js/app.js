@@ -791,7 +791,7 @@
   function setWidgetSize(size) {
     var widget = document.getElementById("maze-map-widget");
     if (!widget) return;
-    var sizes = ["mm-size-s", "mm-size-m", "mm-size-l", "mm-size-round-end"];
+    var sizes = ["mm-size-xs", "mm-size-s", "mm-size-m", "mm-size-l", "mm-size-round-end"];
     for (var i = 0; i < sizes.length; i++) {
       widget.classList.remove(sizes[i]);
     }
@@ -817,7 +817,7 @@
   function getCurrentSize() {
     var widget = document.getElementById("maze-map-widget");
     if (!widget) return "mm-size-s";
-    var sizes = ["mm-size-s", "mm-size-m", "mm-size-l", "mm-size-round-end"];
+    var sizes = ["mm-size-xs", "mm-size-s", "mm-size-m", "mm-size-l", "mm-size-round-end"];
     for (var i = 0; i < sizes.length; i++) {
       if (widget.classList.contains(sizes[i])) return sizes[i];
     }
@@ -825,7 +825,7 @@
   }
 
   function cycleSize(direction) {
-    var order = ["mm-size-s", "mm-size-m", "mm-size-l"];
+    var order = ["mm-size-xs", "mm-size-s", "mm-size-m", "mm-size-l"];
     var current = getCurrentSize();
     var idx = order.indexOf(current);
     if (idx === -1) idx = 0;
@@ -895,7 +895,7 @@
       btnExpand.disabled = size === "mm-size-l";
     }
     if (btnMinimize) {
-      btnMinimize.disabled = size === "mm-size-s";
+      btnMinimize.disabled = size === "mm-size-xs";
     }
   }
 
