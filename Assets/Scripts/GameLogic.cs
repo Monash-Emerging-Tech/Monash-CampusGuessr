@@ -241,7 +241,10 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     public void LoadGame()
     {
-        SceneManager.LoadScene("GameScene");
+        if (TransitionManager.Instance != null)
+            StartCoroutine(TransitionManager.Instance.TransitionToScene("GameScene"));
+        else
+            SceneManager.LoadScene("GameScene");
     }
 
     /// <summary> Loads the starting map selection scene </summary>
@@ -335,6 +338,13 @@ public class GameLogic : MonoBehaviour
         }
         
         nextRound();
+        yield return new WaitUntil(() => !isRoundActive || isGuessing);
+        yield return new WaitForSeconds(0.1f); // Small buffer for skybox to apply
+        
+        // Open iris now that 360 image is ready
+        if (TransitionManager.Instance != null)
+            StartCoroutine(TransitionManager.Instance.OpenIris());
+
         LogDebug("GameScene loaded - first image prepared, game initialized");
     }
     #endregion
