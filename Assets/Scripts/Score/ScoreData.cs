@@ -70,9 +70,9 @@ public class ScoreDataScriptableObject : ScriptableObject
             case "floor-difference":
                 return floorDifference.ToString();
             case "floor-direction":
-                if (floorDifference == 0) return "0 floors off";
-                if (floorDifference == 1) return guessedTooHigh ? "1 floor too high" : "1 floor too low";
-                return guessedTooHigh ? $"{floorDifference} floors too high" : $"{floorDifference} floors too low";
+                if (floorDifference == 0) return "floors off";
+                if (floorDifference == 1) return guessedTooHigh ? "floor too high" : "floor too low";
+                return guessedTooHigh ? "floors too high" : "floors too low";
             case "current-location":
                 if (prevLocations.Count > 0)
                     return prevLocations[prevLocations.Count - 1].Name;
