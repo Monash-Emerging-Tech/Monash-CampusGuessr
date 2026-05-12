@@ -4236,7 +4236,7 @@ GameObject:
   - component: {fileID: 688598292}
   - component: {fileID: 688598291}
   - component: {fileID: 688598290}
-  - component: {fileID: 688598289}
+  - component: {fileID: 688598294}
   m_Layer: 5
   m_Name: TransitionCanvas
   m_TagString: Untagged
@@ -4244,18 +4244,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &688598289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 688598288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d9680f0b06993740bcb08eeebf1d26f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &688598290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4339,6 +4327,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &688598294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688598288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e545f02d1e2bdf6459e845b7399c9e88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  irisImage: {fileID: 395413702}
+  transitionDuration: 0.6
 --- !u!1001 &715765602
 PrefabInstance:
   m_ObjectHideFlags: 0
