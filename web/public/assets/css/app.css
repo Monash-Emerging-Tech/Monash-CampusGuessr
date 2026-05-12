@@ -47,10 +47,10 @@ html, body { height: 100%; }
   min-width: 0;
 }
 
-/* Sizes: base ratio 460x280 */
-.mm-size-s { width: 460px; height: 280px; }
-.mm-size-m { width: 690px; height: 420px; }
-.mm-size-l { width: 920px; height: 560px; }
+/* Sizes: scaled to fit zlevel selector, original 460x280 ratio maintained */
+.mm-size-s { width: 624px; height: 380px; }
+.mm-size-m { width: 936px; height: 570px; }
+.mm-size-l { width: 1249px; height: 760px; }
 #maze-map-ui.mm-round-end .maze-map-widget.mm-size-s,
 #maze-map-ui.mm-round-end .maze-map-widget.mm-size-m,
 #maze-map-ui.mm-round-end .maze-map-widget.mm-size-l {
