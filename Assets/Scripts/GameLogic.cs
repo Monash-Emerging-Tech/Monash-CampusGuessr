@@ -321,6 +321,7 @@ public class GameLogic : MonoBehaviour
         {
             yield return StartCoroutine(locationManager.EnsureLocationMaterialLoaded(queuedNextLocationId.Value));
         }
+        LogDebug($"[GameLogic] pendingMapCenterLat: {pendingMapCenterLat}, pendingMapCenterLng: {pendingMapCenterLng}");
         if (MapInteractionManager.Instance != null)
             MapInteractionManager.Instance.SetMapCenter(pendingMapCenterLat, pendingMapCenterLng, pendingMapZoom, pendingCampusId);
         nextRound();
@@ -799,9 +800,25 @@ public class GameLogic : MonoBehaviour
 
         var dict = locationManager.GetMapPackDict();
         if (dict != null && dict.ContainsKey(id))
+        {
             pendingCampusId = dict[id].campusId != 0 ? dict[id].campusId : 159;
+            // Set map center based on campus
+            if (pendingCampusId == 413) // Monash College
+            {
+                pendingMapCenterLat = -37.820049f;
+                pendingMapCenterLng = 144.949381f;
+                pendingMapZoom = 18;
+            }
+            else // Default to Clayton
+            {
+                pendingMapCenterLat = -37.9106f;
+                pendingMapCenterLng = 145.1361f;
+                pendingMapZoom = 16;
+            }
+        }
 
         LogDebug($"MapPack set to: {name} (ID: {id}, campusId: {pendingCampusId})");
+        LogDebug($"[GameLogic] SetMapPackByName set center to: {pendingMapCenterLat}, {pendingMapCenterLng} on instance {GetInstanceID()}");
 
         // Fire MapPack changed event
         OnMapPackChanged?.Invoke(name);
@@ -841,7 +858,21 @@ public class GameLogic : MonoBehaviour
 
         var dict = locationManager.GetMapPackDict();
         if (dict != null && dict.ContainsKey(id))
+        {
             pendingCampusId = dict[id].campusId != 0 ? dict[id].campusId : 159;
+            if (pendingCampusId == 413)
+            {
+                pendingMapCenterLat = -37.820049f;
+                pendingMapCenterLng = 144.949381f;
+                pendingMapZoom = 18;
+            }
+            else
+            {
+                pendingMapCenterLat = -37.9106f;
+                pendingMapCenterLng = 145.1361f;
+                pendingMapZoom = 16;
+            }
+        }
 
         LogDebug($"GameLogic: MapPack '{mapPackName}' resolved to ID: {id}, campusId: {pendingCampusId}");
 

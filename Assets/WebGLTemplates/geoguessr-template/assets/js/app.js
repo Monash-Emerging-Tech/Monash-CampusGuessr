@@ -60,6 +60,11 @@
       window.mazeMapInstance = map;
       map.on("load", function () {
         console.log("Maze Maps ready for interaction");
+        if (window._pendingMapPackView) {
+          var pv = window._pendingMapPackView;
+          window._pendingMapPackView = null;
+          mmSetMapPackView(pv.campusId, pv.lat, pv.lng, pv.zoom);
+        }
       });
 
       map.on("click", function (e) {
@@ -80,6 +85,54 @@
   window.addEventListener("load", function () {
     setTimeout(initializeMazeMap, 1000);
   });
+
+  // Called from Unity via setMapPackViewFromUnity in WebGLBridge.jslib
+  function mmSetMapPackView(campusId, lat, lng, zoom) {
+    var map = window.mazeMapInstance;
+
+    // Map not ready yet — queue and apply after the load event fires
+    if (!map) {
+      window._pendingMapPackView = { campusId: campusId, lat: lat, lng: lng, zoom: zoom };
+      console.log("mmSetMapPackView: map not ready, queued campus", campusId);
+      return;
+    }
+
+    // Determine current campus from whatever the SDK exposes
+    var currentCampusId =
+      (map.campuses) ||
+      (map.options && map.options.campuses) ||
+      (map._options && map._options.campuses);
+
+    if (currentCampusId === campusId) {
+      // Same campus — just fly to the new centre
+      map.flyTo({ center: [lng, lat], zoom: zoom });
+      console.log("mmSetMapPackView: same campus, flyTo", lat, lng, "zoom", zoom);
+      return;
+    }
+
+    // Different campus — destroy old map and reinitialize
+    console.log("mmSetMapPackView: switching campus", currentCampusId, "→", campusId);
+    try { map.remove(); } catch (e) { /* ignore */ }
+
+    var MazeLibrary = window.Maze || mazemap;
+    var newMap = new MazeLibrary.Map({
+      container: "map",
+      campuses: campusId,
+      center: { lng: lng, lat: lat },
+      zoom: zoom,
+      minZLevel: 0,
+      maxZLevel: 12,
+    });
+    window.mazeMapInstance = newMap;
+    newMap.on("load", function () {
+      console.log("MazeMap reinitialized for campus", campusId);
+    });
+    newMap.on("click", function (e) {
+      if (!isGuessingState) return;
+      createSingleMarker(newMap, e.lngLat, newMap.zLevel);
+    });
+  }
+  window.mmSetMapPackView = mmSetMapPackView;
 
   // --------------------------------------------------------------- MARKER PLACEMENT
   function createSingleMarker(map, lngLat, zLevel) {
