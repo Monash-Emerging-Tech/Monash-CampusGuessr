@@ -4265,7 +4265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   irisImage: {fileID: 708388307}
-  transitionDuration: 1
+  transitionDuration: 0.5
 --- !u!1 &708388306
 GameObject:
   m_ObjectHideFlags: 0
