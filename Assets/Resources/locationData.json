@@ -2,7 +2,7 @@
   "Locations": [
     {
       "ID": 0,
-      "Name": "Digital Makerspace (Building 94, G03)",
+      "Name": "Digital Makerspace",
       "FileName": "360_Monash101_DigiMakerspace",
       "latitude": -37.90986,
       "longitude": 145.135015,
@@ -10,7 +10,7 @@
     },
     {
       "ID": 1,
-      "Name": "Campus Centre North, Floor 1 Outside",
+      "Name": "Campus Centre North Outside",
       "FileName": "360_OutsideLiving_CC_N_1_Outside",
       "latitude": -37.91158,
       "longitude": 145.13276,
@@ -34,7 +34,7 @@
     },
     {
       "ID": 4,
-      "Name": "Joe's Pizzeria'",
+      "Name": "Joe's Pizzeria",
       "FileName": "360_OutsideLiving_JoePizza",
       "latitude": -37.911653,
       "longitude": 145.135821,
@@ -42,7 +42,7 @@
     },
     {
       "ID": 5,
-      "Name": "Monash 101 - Building 94 Lecture Stairs",
+      "Name": "Woodside Lecture Stairs",
       "FileName": "360_Monash101_WoodsideLectureStairs",
       "latitude": -37.910022,
       "longitude": 145.135268,
@@ -58,7 +58,7 @@
     },
     {
       "ID": 7,
-      "Name": "Campus Centre North, Ground Floor Outside",
+      "Name": "Campus Centre North Ground Floor Outside",
       "FileName": "360_OutsideLiving_CC_N_G_Outside",
       "latitude": -37.911494,
       "longitude": 145.132844,
@@ -114,7 +114,7 @@
     },
     {
       "ID": 14,
-      "Name": "Weeping Women Fountains (SANNÉ MESTROM) Campus Park",
+      "Name": "Weeping Women Fountains Campus Park",
       "FileName": "360_OL_ThatFountain",
       "latitude": -37.910438,
       "longitude": 145.136249,
@@ -122,7 +122,7 @@
     },
     {
       "ID": 15,
-      "Name": "Monash Smart Manufacturing Lab, Engineering 60",
+      "Name": "Monash Smart Manufacturing Lab",
       "FileName": "360_MSMLab",
       "latitude": -37.90970414259322,
       "longitude": 145.13427507806313,
@@ -138,7 +138,7 @@
     },
     {
       "ID": 17,
-      "Name": "LTB_G81",
+      "Name": "LTB G81",
       "FileName": "360_LTB_G81",
       "latitude": -37.913857943837506,
       "longitude": 145.13228375038608,
@@ -146,7 +146,7 @@
     },
     {
       "ID": 18,
-      "Name": "MenziesGroundFloor",
+      "Name": "Menzies Ground Floor",
       "FileName": "360_MenziesGroundFloor",
       "latitude": -37.91270903845613,
       "longitude": 145.13251189854333,
@@ -154,7 +154,7 @@
     },
     {
       "ID": 19,
-      "Name": "C1Theatre",
+      "Name": "C1 Theatre",
       "FileName": "360_C1Theatre",
       "latitude": -37.91105696020817,
       "longitude": 145.13405065007504,
@@ -162,7 +162,7 @@
     },
     {
       "ID": 20,
-      "Name": "LTB_G81_Corner",
+      "Name": "LTB G81 Corner",
       "FileName": "360_LTB_G81_Corner",
       "latitude": -37.91369263128193,
       "longitude": 145.13234996381397,
@@ -178,7 +178,7 @@
     },
     {
       "ID": 22,
-      "Name": "LG_14 Design and tech building",
+      "Name": "Design and Tech Building LG14",
       "FileName": "360_DT_LG_14",
       "latitude": -37.90985687032333,
       "longitude": 145.1350765887716,
@@ -186,7 +186,7 @@
     },
     {
       "ID": 23,
-      "Name": "L1_Menzies",
+      "Name": "Menzies Level 1",
       "FileName": "360_L1_Menzies",
       "latitude": -37.91265304613119,
       "longitude": 145.13264312657208,
@@ -194,7 +194,7 @@
     },
     {
       "ID": 24,
-      "Name": "Eng Makerspace",
+      "Name": "Engineering Makerspace",
       "FileName": "360_Eng_Makerspace",
       "latitude": -37.909854202716005,
       "longitude": 145.13443414482776,
@@ -210,7 +210,7 @@
     },
     {
       "ID": 26,
-      "Name": "G24 engineering 60",
+      "Name": "G24 Engineering 60",
       "FileName": "360_OutsideMakerspace",
       "latitude": -37.90984342324619,
       "longitude": 145.1342335335612,
@@ -218,7 +218,7 @@
     },
     {
       "ID": 27,
-      "Name": "LG09 design and tech building",
+      "Name": "Design and Tech Building LG09",
       "FileName": "360_LG02Corridor",
       "latitude": -37.90975783175505,
       "longitude": 145.1354707378469,
@@ -226,7 +226,7 @@
     },
     {
       "ID": 28,
-      "Name": "Outside ESports Campus Centre Basement",
+      "Name": "ESports Outside Campus Centre Basement",
       "FileName": "360_ESportsOutside",
       "latitude": -37.91154072393464,
       "longitude": 145.13293060107094,
@@ -242,7 +242,7 @@
     },
     {
       "ID": 30,
-      "Name": "Piano Room campus centre Basement",
+      "Name": "Piano Room Campus Centre Basement",
       "FileName": "360_PianoRoom",
       "latitude": -37.91155499733444,
       "longitude": 145.13297762898281,
@@ -274,7 +274,7 @@
     },
     {
       "ID": 34,
-      "Name": "Club Locker Room Campus Centre ",
+      "Name": "Club Locker Room Campus Centre",
       "FileName": "360_ClubLockerRoom",
       "latitude": -37.911671443753455,
       "longitude": 145.13311707248045,
@@ -282,7 +282,7 @@
     },
     {
       "ID": 35,
-      "Name": "East Corridor Menzies Level 11",
+      "Name": "East Corridor Menzies",
       "FileName": "360_L11_Menzies",
       "latitude": -37.91259767473501,
       "longitude": 145.13285819756624,
@@ -290,7 +290,7 @@
     },
     {
       "ID": 36,
-      "Name": "West Stairs LTB Level 1",
+      "Name": "West Stairs LTB",
       "FileName": "360_LTB_SideStairs",
       "latitude": -37.91353362238021,
       "longitude": 145.13241782733536,
@@ -298,7 +298,7 @@
     },
     {
       "ID": 37,
-      "Name": "S201 Menzies ",
+      "Name": "S201 Menzies",
       "FileName": "360_MenziesLvl2",
       "latitude": -37.91266523231066,
       "longitude": 145.13264168117536,
@@ -314,7 +314,7 @@
     },
     {
       "ID": 39,
-      "Name": " 284 LTB",
+      "Name": "284 LTB",
       "FileName": "360_LTB_284",
       "latitude": -37.913966131213975,
       "longitude": 145.132347795585,
@@ -338,7 +338,7 @@
     },
     {
       "ID": 42,
-      "Name": "Skulls LTB Level 3",
+      "Name": "Skulls LTB",
       "FileName": "360_LTB_Skulls",
       "latitude": -37.91404635018452,
       "longitude": 145.13220762380098,
@@ -346,7 +346,7 @@
     },
     {
       "ID": 43,
-      "Name": "Design and Tech Level 3",
+      "Name": "Design and Tech Building Level 3",
       "FileName": "360_DT_Lvl_3",
       "latitude": -37.90947022747471,
       "longitude": 145.13514331323103,
@@ -354,7 +354,7 @@
     },
     {
       "ID": 44,
-      "Name": "385 LTB ",
+      "Name": "385 LTB",
       "FileName": "360_LTB_385Corner",
       "latitude": -37.90947022747471,
       "longitude": 145.13514331323103,
@@ -362,7 +362,7 @@
     },
     {
       "ID": 45,
-      "Name": "Menzies Level 8 Lookout",
+      "Name": "Menzies Lookout",
       "FileName": "360_Menzies_Lvl_8",
       "latitude": -37.91265510957941,
       "longitude": 145.13246043564203,
@@ -370,7 +370,7 @@
     },
     {
       "ID": 46,
-      "Name": "L10 Beach Benches",
+      "Name": "Beach Benches",
       "FileName": "360_MonashCollege_L10_Beach_Benches",
       "latitude": -37.820118,
       "longitude": 144.949077,
@@ -378,7 +378,7 @@
     },
     {
       "ID": 47,
-      "Name": "L10 Dining Area",
+      "Name": "Dining Area (L10)",
       "FileName": "360_MonashCollege_L10_Dining_Area",
       "latitude": -37.820047,
       "longitude": 144.948960,
@@ -386,7 +386,7 @@
     },
     {
       "ID": 48,
-      "Name": "L10 Gardens",
+      "Name": "Gardens (L10)",
       "FileName": "360_MonashCollege_L10_Gardens",
       "latitude": -37.820074,
       "longitude": 144.948870,
@@ -394,7 +394,7 @@
     },
     {
       "ID": 49,
-      "Name": "L10 Lecture Room",
+      "Name": "Lecture Room",
       "FileName": "360_MonashCollege_L10_Lecture_Room",
       "latitude": -37.820365,
       "longitude": 144.948966,
@@ -402,7 +402,7 @@
     },
     {
       "ID": 50,
-      "Name": "L10 Sofas Outside Lecture Rooms",
+      "Name": "Sofas Outside Lecture Rooms",
       "FileName": "360_MonashCollege_L10_Sofas_Outside_Lecture_Rooms",
       "latitude": -37.820305,
       "longitude": 144.949083,
@@ -410,7 +410,7 @@
     },
     {
       "ID": 51,
-      "Name": "L10 Study Column",
+      "Name": "Study Column (L10)",
       "FileName": "360_MonashCollege_L10_Study_Column",
       "latitude": -37.820055,
       "longitude": 144.949037,
@@ -418,7 +418,7 @@
     },
     {
       "ID": 52,
-      "Name": "L2 Amphitheater",
+      "Name": "Amphitheater",
       "FileName": "360_MonashCollege_L2_Amphitheater1",
       "latitude": -37.820245,
       "longitude": 144.948838,
@@ -426,7 +426,7 @@
     },
     {
       "ID": 53,
-      "Name": "L2 Auditorium",
+      "Name": "Auditorium",
       "FileName": "360_MonashCollege_L2_Auditorium",
       "latitude": -37.820026,
       "longitude": 144.948806,
@@ -434,7 +434,7 @@
     },
     {
       "ID": 54,
-      "Name": "L4 Classroom",
+      "Name": "Classroom",
       "FileName": "360_MonashCollege_L2_Classroom",
       "latitude": -37.820380,
       "longitude": 144.948799,
@@ -442,7 +442,7 @@
     },
     {
       "ID": 55,
-      "Name": "L4 Collage Connect",
+      "Name": "College Connect",
       "FileName": "360_MonashCollege_L2_Collage_Connect",
       "latitude": -37.820142,
       "longitude": 144.948843,
@@ -450,7 +450,7 @@
     },
     {
       "ID": 56,
-      "Name": "L4 Collage Connect Sitting Area",
+      "Name": "College Connect Sitting Area",
       "FileName": "360_MonashCollege_L2_Collage_Connect_Sitting_Area",
       "latitude": -37.820197,
       "longitude": 144.948787,
@@ -458,7 +458,7 @@
     },
     {
       "ID": 57,
-      "Name": "L2 Dining Area",
+      "Name": "Dining Area (L2)",
       "FileName": "360_MonashCollege_L2_Dining_Area",
       "latitude": -37.820370,
       "longitude": 144.948837,
@@ -466,7 +466,7 @@
     },
     {
       "ID": 58,
-      "Name": "L2 Gray Bed",
+      "Name": "Gray Bed",
       "FileName": "360_MonashCollege_L2_Gray_Bed",
       "latitude": -37.820419,
       "longitude": 144.948784,
@@ -474,7 +474,7 @@
     },
     {
       "ID": 59,
-      "Name": "L2 Outside Back Kitchen",
+      "Name": "Outside Back Kitchen",
       "FileName": "360_MonashCollege_L2_Outside_Back_Kitchen",
       "latitude": -37.819872,
       "longitude": 144.948908,
@@ -482,7 +482,7 @@
     },
     {
       "ID": 60,
-      "Name": "L2 Outside Entrance",
+      "Name": "Outside Entrance",
       "FileName": "360_MonashCollege_L2_Outside_Entrance",
       "latitude": -37.820065,
       "longitude": 144.949310,
@@ -490,7 +490,7 @@
     },
     {
       "ID": 61,
-      "Name": "L2 Outside Left Elevators",
+      "Name": "Outside Left Elevators",
       "FileName": "360_MonashCollege_L2_Outside_Left_Elevators",
       "latitude": -37.819965,
       "longitude": 144.949094,
@@ -498,7 +498,7 @@
     },
     {
       "ID": 62,
-      "Name": "L4 Outside Parents Room",
+      "Name": "Outside Parents Room",
       "FileName": "360_MonashCollege_L2_Outside_Parents_Room",
       "latitude": -37.820025,
       "longitude": 144.948916,
@@ -506,7 +506,7 @@
     },
     {
       "ID": 63,
-      "Name": "L4 Very Random Area Near Escalator",
+      "Name": "Random Area Near Escalator",
       "FileName": "360_MonashCollege_L2_Very_Random_Area_Near_Escalator",
       "latitude": -37.820242,
       "longitude": 144.949035,
@@ -514,7 +514,7 @@
     },
     {
       "ID": 66,
-      "Name": "L5 Dining Area",
+      "Name": "Dining Area (L5)",
       "FileName": "360_MonashCollege_L5_Dining_Area",
       "latitude": -37.820042,
       "longitude": 144.948935,
@@ -522,7 +522,7 @@
     },
     {
       "ID": 67,
-      "Name": "L5 Gardens",
+      "Name": "Gardens (L5)",
       "FileName": "360_MonashCollege_L5_Gardens",
       "latitude": -37.820083,
       "longitude": 144.948798,
@@ -530,7 +530,7 @@
     },
     {
       "ID": 72,
-      "Name": "L5 Outside Elevators",
+      "Name": "Outside Elevators (L5)",
       "FileName": "360_MonashCollege_L5_Outside_Elevators",
       "latitude": -37.820020,
       "longitude": 144.949403,
@@ -538,7 +538,7 @@
     },
     {
       "ID": 73,
-      "Name": "L5 Study Area Outside Elevators",
+      "Name": "Study Area Outside Elevators",
       "FileName": "360_MonashCollege_L5_Study_Area_Outside_Elevators",
       "latitude": -37.819803,
       "longitude": 144.948979,
@@ -546,7 +546,7 @@
     },
     {
       "ID": 74,
-      "Name": "L5 Study Hex",
+      "Name": "Study Hex",
       "FileName": "360_MonashCollege_L5_Study_Hex",
       "latitude": -37.820116,
       "longitude": 144.949069,
@@ -554,7 +554,7 @@
     },
     {
       "ID": 75,
-      "Name": "L6 Arcane Games",
+      "Name": "Arcane Games",
       "FileName": "360_MonashCollege_L6_Arcane_Games",
       "latitude": -37.820059,
       "longitude": 144.949264,
@@ -562,7 +562,7 @@
     },
     {
       "ID": 77,
-      "Name": "L6 Dining Area",
+      "Name": "Dining Area (L6)",
       "FileName": "360_MonashCollege_L6_Dining_Area",
       "latitude": -37.820036,
       "longitude": 144.948946,
@@ -570,7 +570,7 @@
     },
     {
       "ID": 78,
-      "Name": "L6 Garden",
+      "Name": "Gardens (L6)",
       "FileName": "360_MonashCollege_L6_Garden",
       "latitude": -37.82008,
       "longitude": 144.948816,
@@ -578,7 +578,7 @@
     },
     {
       "ID": 80,
-      "Name": "L6 Library Corner",
+      "Name": "Library Corner",
       "FileName": "360_MonashCollege_L6_Library_Corner",
       "latitude": -37.820399,
       "longitude": 144.948885,
@@ -586,7 +586,7 @@
     },
     {
       "ID": 81,
-      "Name": "L6 Library Student Learning Hub",
+      "Name": "Library Student Learning Hub",
       "FileName": "360_MonashCollege_L6_Library_Student_Learning_Hub",
       "latitude": -37.820360,
       "longitude": 144.948930,
@@ -594,7 +594,7 @@
     },
     {
       "ID": 82,
-      "Name": "L6 Outside IT Support eSolutions",
+      "Name": "Outside IT Support",
       "FileName": "360_MonashCollege_L6_Outside_IT_Support_eSolutions",
       "latitude": -37.819903,
       "longitude": 144.949335,
@@ -602,7 +602,7 @@
     },
     {
       "ID": 83,
-      "Name": "L6 Pink Bed",
+      "Name": "Pink Bed",
       "FileName": "360_MonashCollege_L6_Pink_Bed",
       "latitude": -37.820126,
       "longitude": 144.949038,
@@ -610,7 +610,7 @@
     },
     {
       "ID": 85,
-      "Name": "L7 Central Study Area",
+      "Name": "Central Study Area",
       "FileName": "360_MonashCollege_L7_Central_Study_Area",
       "latitude": -37.820113,
       "longitude": 144.949076,
@@ -618,7 +618,7 @@
     },
     {
       "ID": 86,
-      "Name": "L7 Dining Area",
+      "Name": "Dining Area (L7)",
       "FileName": "360_MonashCollege_L7_Dining_Area",
       "latitude": -37.820034,
       "longitude": 144.948937,
@@ -626,7 +626,7 @@
     },
     {
       "ID": 87,
-      "Name": "L7 Outside Meeting Room",
+      "Name": "Outside Meeting Room",
       "FileName": "360_MonashCollege_L7_Outside_Meeting_Room",
       "latitude": -37.820037,
       "longitude": 144.949251,
@@ -634,7 +634,7 @@
     },
     {
       "ID": 88,
-      "Name": "L7 Study Column",
+      "Name": "Study Column (L7)",
       "FileName": "360_MonashCollege_L7_Study_Column",
       "latitude": -37.819943,
       "longitude": 144.949239,
@@ -642,7 +642,7 @@
     },
     {
       "ID": 91,
-      "Name": "L8 Sitting Area",
+      "Name": "Sitting Area",
       "FileName": "360_MonashCollege_L8_Sitting_Area",
       "latitude": -37.82011,
       "longitude": 144.949065,
@@ -696,6 +696,6 @@
       "campusId": 413,
       "locationIDs": [46, 47, 48, 49, 50, 51],
       "bucketSubdirectory": "monash-college"
-    }    
+    }
   ]
 }

@@ -61,7 +61,7 @@ public class MapInteractionManager : MonoBehaviour
     private bool isMapActive = false;
     // Events
     public static event Action<LocationData>? OnGuessSubmitted; // Event with location data
-    public static event Action<int, int>? OnScoreCalculated;
+    public static event Action<int, int, int, bool>? OnScoreCalculated;
     public static event Action? OnMapOpened;
     public static event Action? OnMapClosed;
     public static event Action<int>? OnZLevelChanged; // New z-level event
@@ -355,8 +355,8 @@ public class MapInteractionManager : MonoBehaviour
             // Calculate score if we have both locations
             if (currentActualLocation != null && currentGuessLocation != null)
             {
-                var (score, distance) = CalculateScore(currentActualLocation, currentGuessLocation);
-                OnScoreCalculated?.Invoke(score, distance);
+                var (score, distance, floorDiff, tooHigh) = CalculateScore(currentActualLocation, currentGuessLocation);
+                OnScoreCalculated?.Invoke(score, distance, floorDiff, tooHigh);
 
                 // Show both locations on map
                 ShowBothLocations();
@@ -456,7 +456,7 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     /// <param name="actual">Actual location data</param>
     /// <param name="guess">Guess location data</param>
     /// <returns>Score from 0 to maxScore</returns>
-    private (int score, int distance) CalculateScore(LocationData actual, LocationData guess)
+    private (int score, int distance, int floorDiff, bool tooHigh) CalculateScore(LocationData actual, LocationData guess)
     {
         // New Scoring Method (considers Z-levels) 13/05/2026
         float distance = CalculateDistance(actual, guess);
@@ -474,7 +474,8 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
         }
 
         LogDebug($"Distance: {distance:F2}m, Score: {score}");
-        return (score, (int)distance);
+        bool tooHigh = guess.zLevel > actual.zLevel;
+        return (score, (int)distance, zLevelDiff, tooHigh);;
     }
 
     /// <summary>

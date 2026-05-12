@@ -714,7 +714,10 @@ public class GameLogic : MonoBehaviour
     /// Called when score is calculated
     /// </summary>
     /// <param name="score">The calculated score</param>
-    private void OnScoreCalculated(int score, int distance)
+    /// <param name="distance">The distance between guess and actual location</param>
+    /// <param name="floorDiff">The difference in z-levels</param>
+    /// <param name="tooHigh">Whether the guess was too high</param>
+    private void OnScoreCalculated(int score, int distance, int floorDiff, bool tooHigh)
     {
         currentScore += score;
         
@@ -727,6 +730,7 @@ public class GameLogic : MonoBehaviour
             scoreData.SetTotalScore(currentScore);
             scoreData.SetRoundScore(score);
             scoreData.SetDistanceScore(distance);
+            scoreData.SetFloorData(floorDiff, tooHigh);
             scoreData.AddScore(score);
         }
 
