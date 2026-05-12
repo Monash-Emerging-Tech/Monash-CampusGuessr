@@ -37,6 +37,8 @@
     return false;
   }
 
+  var mazeMapSdkReady = false;
+
   function initializeMazeMap() {
     if (!isMazeMapReady()) {
       if (window.mazeMapRetryCount === undefined) window.mazeMapRetryCount = 0;
@@ -44,29 +46,63 @@
         window.mazeMapRetryCount++;
         return void setTimeout(initializeMazeMap, 1000);
       }
-      console.error("Maze Maps failed to load after 10 attempts");
+      console.error("Maze Maps SDK failed to load after 10 attempts");
       return;
     }
+    mazeMapSdkReady = true;
+    console.log("Maze Maps SDK ready — waiting for campus from Unity");
+    if (window._pendingMapPackView) {
+      var pv = window._pendingMapPackView;
+      window._pendingMapPackView = null;
+      mmSetMapPackView(pv.campusId, pv.lat, pv.lng, pv.zoom);
+    }
+  }
+
+  window.addEventListener("load", function () {
+    setTimeout(initializeMazeMap, 1000);
+  });
+
+  // Called from Unity via setMapPackViewFromUnity in WebGLBridge.jslib.
+  // Creates the MazeMap instance for the first time using the campus Unity passes.
+  function mmSetMapPackView(campusId, lat, lng, zoom) {
+    // SDK not ready yet — queue and apply once initializeMazeMap confirms it
+    if (!mazeMapSdkReady) {
+      window._pendingMapPackView = { campusId: campusId, lat: lat, lng: lng, zoom: zoom };
+      console.log("mmSetMapPackView: SDK not ready, queued campus", campusId);
+      return;
+    }
+
+    var MazeLibrary = window.Maze || mazemap;
+
+    if (window.mazeMapInstance) {
+        if (window._currentCampusId === campusId) {
+          window.mazeMapInstance.flyTo({ center: [lng, lat], zoom: zoom });
+          console.log("mmSetMapPackView: flyTo", lat, lng, "zoom", zoom);
+          return;
+        } else {
+          console.log("mmSetMapPackView: campus changed from", window._currentCampusId, "to", campusId, "— recreating map");
+          window.mazeMapInstance.remove();
+          window.mazeMapInstance = null;
+          window._currentCampusId = null;
+        }
+      }
+
+    // First call or campus changed — create map
+    console.log("mmSetMapPackView: creating map for campus", campusId, lat, lng, zoom);
+    window._currentCampusId = campusId;
     try {
-      var MazeLibrary = window.Maze || mazemap;
       var map = new MazeLibrary.Map({
         container: "map",
-        campuses: 159,
-        center: { lng: 145.1361, lat: -37.9106 },
-        zoom: 16,
+        campuses: campusId,
+        center: { lng: lng, lat: lat },
+        zoom: zoom,
         minZLevel: 0,
         maxZLevel: 12,
       });
       window.mazeMapInstance = map;
       map.on("load", function () {
-        console.log("Maze Maps ready for interaction");
-        if (window._pendingMapPackView) {
-          var pv = window._pendingMapPackView;
-          window._pendingMapPackView = null;
-          mmSetMapPackView(pv.campusId, pv.lat, pv.lng, pv.zoom);
-        }
+        console.log("Maze Maps ready for interaction, campus", campusId);
       });
-
       map.on("click", function (e) {
         if (!isGuessingState) {
           console.log("Map click ignored - guessing disabled");
@@ -80,57 +116,6 @@
         error && error.message ? error.message : error
       );
     }
-  }
-
-  window.addEventListener("load", function () {
-    setTimeout(initializeMazeMap, 1000);
-  });
-
-  // Called from Unity via setMapPackViewFromUnity in WebGLBridge.jslib
-  function mmSetMapPackView(campusId, lat, lng, zoom) {
-    var map = window.mazeMapInstance;
-
-    // Map not ready yet — queue and apply after the load event fires
-    if (!map) {
-      window._pendingMapPackView = { campusId: campusId, lat: lat, lng: lng, zoom: zoom };
-      console.log("mmSetMapPackView: map not ready, queued campus", campusId);
-      return;
-    }
-
-    // Determine current campus from whatever the SDK exposes
-    var currentCampusId =
-      (map.campuses) ||
-      (map.options && map.options.campuses) ||
-      (map._options && map._options.campuses);
-
-    if (currentCampusId === campusId) {
-      // Same campus — just fly to the new centre
-      map.flyTo({ center: [lng, lat], zoom: zoom });
-      console.log("mmSetMapPackView: same campus, flyTo", lat, lng, "zoom", zoom);
-      return;
-    }
-
-    // Different campus — destroy old map and reinitialize
-    console.log("mmSetMapPackView: switching campus", currentCampusId, "→", campusId);
-    try { map.remove(); } catch (e) { /* ignore */ }
-
-    var MazeLibrary = window.Maze || mazemap;
-    var newMap = new MazeLibrary.Map({
-      container: "map",
-      campuses: campusId,
-      center: { lng: lng, lat: lat },
-      zoom: zoom,
-      minZLevel: 0,
-      maxZLevel: 12,
-    });
-    window.mazeMapInstance = newMap;
-    newMap.on("load", function () {
-      console.log("MazeMap reinitialized for campus", campusId);
-    });
-    newMap.on("click", function (e) {
-      if (!isGuessingState) return;
-      createSingleMarker(newMap, e.lngLat, newMap.zLevel);
-    });
   }
   window.mmSetMapPackView = mmSetMapPackView;
 
