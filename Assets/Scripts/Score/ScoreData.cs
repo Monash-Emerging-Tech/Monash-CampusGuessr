@@ -11,6 +11,8 @@ public class ScoreDataScriptableObject : ScriptableObject
 
     [SerializeField] private List<LocationManager.Location> prevLocations = new List<LocationManager.Location>();
     [SerializeField] private List<int> prevScores = new List<int>();
+    [SerializeField] private int floorDifference;
+    [SerializeField] private bool guessedTooHigh;   
 
 
 
@@ -18,7 +20,8 @@ public class ScoreDataScriptableObject : ScriptableObject
 
     public int RoundScore => roundScore;
     public int DistanceScore => distanceScore;
-
+    public int FloorDifference => floorDifference;
+    public bool GuessedTooHigh => guessedTooHigh;
     public List<LocationManager.Location> PreviousLocations => prevLocations;
 
     public List<int> PreviousScores => prevScores;
@@ -32,6 +35,8 @@ public class ScoreDataScriptableObject : ScriptableObject
 
     public void ResetAll() {
         currentScore = 0;
+        floorDifference = 0;
+        guessedTooHigh = false;
         prevLocations.Clear();
         prevScores.Clear();
     } 
@@ -46,6 +51,12 @@ public class ScoreDataScriptableObject : ScriptableObject
         prevScores.Add(score);
     }
 
+    public void SetFloorData(int diff, bool tooHigh)
+    {
+        floorDifference = diff;
+        guessedTooHigh = tooHigh;
+    }
+
     public string GetScoreData(string data) {
 
         switch (data)
@@ -56,6 +67,12 @@ public class ScoreDataScriptableObject : ScriptableObject
                 return roundScore.ToString();
             case "round-distance":
                 return distanceScore + "m";
+            case "floor-difference":
+                return floorDifference.ToString();
+            case "floor-direction":
+                if (floorDifference == 0) return "0 floors off";
+                if (floorDifference == 1) return guessedTooHigh ? "1 floor too high" : "1 floor too low";
+                return guessedTooHigh ? $"{floorDifference} floors too high" : $"{floorDifference} floors too low";
             case "current-location":
                 if (prevLocations.Count > 0)
                     return prevLocations[prevLocations.Count - 1].Name;
