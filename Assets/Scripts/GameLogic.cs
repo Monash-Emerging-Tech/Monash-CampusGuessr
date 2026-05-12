@@ -338,7 +338,9 @@ public class GameLogic : MonoBehaviour
         }
         
         nextRound();
-
+        yield return new WaitUntil(() => !isRoundActive || isGuessing);
+        yield return new WaitForSeconds(0.1f); // Small buffer for skybox to apply
+        
         // Open iris now that 360 image is ready
         if (TransitionManager.Instance != null)
             StartCoroutine(TransitionManager.Instance.OpenIris());

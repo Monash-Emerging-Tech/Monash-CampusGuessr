@@ -7,7 +7,7 @@ public class TransitionManager : MonoBehaviour
 {
     public static TransitionManager Instance { get; private set; }
 
-    [SerializeField] private Image irisImage;
+    [SerializeField] private RawImage irisImage;
     [SerializeField] private float transitionDuration = 0.6f;
 
     private void Awake()
@@ -26,30 +26,35 @@ public class TransitionManager : MonoBehaviour
 
     private void Start()
     {
-        irisImage.fillAmount = 0f; // Start fully open
+        SetProgress(0f); // Start fully open
     }
 
     public IEnumerator TransitionToScene(string sceneName)
     {
-        yield return StartCoroutine(SetFill(0f, 1f)); // Close iris
+        yield return StartCoroutine(SetProgressCoroutine(0f, 1f)); // Close iris
         SceneManager.LoadScene(sceneName);
     }
 
     public IEnumerator OpenIris()
     {
-        yield return StartCoroutine(SetFill(1f, 0f)); // Open iris
+        yield return StartCoroutine(SetProgressCoroutine(1f, 0f)); // Open iris
     }
 
-    private IEnumerator SetFill(float from, float to)
+    private void SetProgress(float value)
+    {
+        irisImage.material.SetFloat("_Progress", value);
+    }
+
+    private IEnumerator SetProgressCoroutine(float from, float to)
     {
         float elapsed = 0f;
-        irisImage.fillAmount = from;
+        SetProgress(from);
         while (elapsed < transitionDuration)
         {
             elapsed += Time.deltaTime;
-            irisImage.fillAmount = Mathf.Lerp(from, to, Mathf.SmoothStep(0f, 1f, elapsed / transitionDuration));
+            SetProgress(Mathf.Lerp(from, to, Mathf.SmoothStep(0f, 1f, elapsed / transitionDuration)));
             yield return null;
         }
-        irisImage.fillAmount = to;
+        SetProgress(to);
     }
 }
