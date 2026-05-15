@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "geoguessr.sln"
+    "dotnet.defaultSolution": "Monash-CampusGuessr.slnx"
 }
