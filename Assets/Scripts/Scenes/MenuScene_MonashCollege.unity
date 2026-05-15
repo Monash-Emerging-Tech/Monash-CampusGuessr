@@ -5658,7 +5658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dda8dbdc5007394e90e23b99676e656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasToShow: {fileID: 0}
+  canvasToShow: {fileID: 1701526511}
   moveStrength: 1
   smoothTime: 0.3
   enableMouseParallax: 1
@@ -5672,7 +5672,7 @@ Animator:
   m_GameObject: {fileID: 1457780144}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b91acbdfb53758c479eff9d582288785, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
