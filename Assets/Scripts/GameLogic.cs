@@ -241,10 +241,16 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     public void LoadGame()
     {
-        if (TransitionManager.Instance != null)
-            StartCoroutine(TransitionManager.Instance.TransitionToScene("GameScene"));
+        if (TransitionManager.Instance.isActiveAndEnabled)
+        {
+            TransitionManager.Instance.StartCoroutine(
+                TransitionManager.Instance.TransitionToScene("GameScene")
+            );
+        }
         else
+        {
             SceneManager.LoadScene("GameScene");
+        }
     }
 
     /// <summary> Loads the starting map selection scene </summary>
