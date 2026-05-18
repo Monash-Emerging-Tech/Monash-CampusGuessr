@@ -57,6 +57,7 @@ public class LocationManager : MonoBehaviour
         public string Name;
         public int campusId; // MazeMap campus ID. Falls back to 159 (Clayton) in GameLogic if 0.
         public float zLevelWeight; // How harshly wrong z-level is penalised (0.0 - 1.0)
+        public float distanceScale; // Multiplies distance before scoring (higher = harsher)
         public List<int> locationIDs;
         public string bucketSubdirectory; // Subdirectory in R2 bucket for this MapPack (e.g., "monash-101"). Leave empty for root level.
     }

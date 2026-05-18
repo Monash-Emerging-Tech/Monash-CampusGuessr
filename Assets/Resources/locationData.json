@@ -669,6 +669,7 @@
       "ID": 1,
       "Name": "OG Placeholders",
       "zLevelWeight": 0.5,
+      "distanceScale": 1.0,
       "campusId": 159,
       "locationIDs": [0, 14],
       "bucketSubdirectory": ""
@@ -677,6 +678,7 @@
       "ID": 2,
       "Name": "Monash 101",
       "zLevelWeight": 0.5,
+      "distanceScale": 1.0,
       "campusId": 159,
       "locationIDs": [5],
       "bucketSubdirectory": "monash-101"
@@ -685,6 +687,7 @@
       "ID": 3,
       "Name": "Outside Living",
       "zLevelWeight": 0.5,
+      "distanceScale": 1.0,
       "campusId": 159,
       "locationIDs": [1, 2, 3, 4, 6, 7],
       "bucketSubdirectory": "outside-living"
@@ -693,6 +696,7 @@
       "ID": 4,
       "Name": "Monash College",
       "zLevelWeight": 1.0,
+      "distanceScale": 4.0,
       "campusId": 413,
       "locationIDs": [46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 66, 67, 72, 73, 74, 75, 77, 78, 80, 81, 82, 83, 85, 86, 87, 88, 91, 93],
       "bucketSubdirectory": "monash-college"

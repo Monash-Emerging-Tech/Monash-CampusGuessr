@@ -49,6 +49,7 @@ public class MapInteractionManager : MonoBehaviour
     [Header("Scoring Settings")]
     [SerializeField] private AnimationCurve scoreCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
     private float currentZLevelWeight = 0.5f; // Set per map pack
+    private float currentDistanceScale = 1f;
 
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
@@ -458,9 +459,9 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     /// <returns>Score from 0 to maxScore</returns>
     private (int score, int distance, int floorDiff, bool tooHigh) CalculateScore(LocationData actual, LocationData guess)
     {
-        // New Scoring Method (considers Z-levels) 13/05/2026
+        // New Scoring Method (considers Z-levels AND distance scale) 18/05/2026
         float distance = CalculateDistance(actual, guess);
-        int score = ScoreDataScriptableObject.CalculateScore((int)distance);
+        int score = ScoreDataScriptableObject.CalculateScore((int)(distance * currentDistanceScale));
 
         // Apply z-level penalty
         int zLevelDiff = Mathf.Abs(actual.zLevel - guess.zLevel);
@@ -503,6 +504,12 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     {
         currentZLevelWeight = Mathf.Clamp01(weight);
         LogDebug($"Z-level weight set to: {currentZLevelWeight}");
+    }
+
+    public void SetDistanceScale(float scale)
+    {
+        currentDistanceScale = scale;
+        LogDebug($"Distance scale set to: {currentDistanceScale}");
     }
 
     #endregion

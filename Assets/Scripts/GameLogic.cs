@@ -339,8 +339,9 @@ public class GameLogic : MonoBehaviour
         if (dict != null && dict.ContainsKey(resolvedMapPackId) && MapInteractionManager.Instance != null)
         {
             float zWeight = dict[resolvedMapPackId].zLevelWeight;
+            float distScale = dict[resolvedMapPackId].distanceScale > 0 ? dict[resolvedMapPackId].distanceScale : 1f;
             MapInteractionManager.Instance.SetZLevelWeight(zWeight);
-            LogDebug($"Z-level weight set to {zWeight} for map pack '{mapPackName}'");
+            MapInteractionManager.Instance.SetDistanceScale(distScale);
         }
         
         nextRound();
