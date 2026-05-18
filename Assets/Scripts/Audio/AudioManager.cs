@@ -19,6 +19,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip gameplayMusic;
     [SerializeField] private AudioClip buttonClickSound;
     [SerializeField] private AudioClip scoreProgressSound;
+    [SerializeField] private AudioClip guessSound;
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource bgmSource;
@@ -63,6 +64,11 @@ public class AudioManager : MonoBehaviour
     public void PlayButtonClick()
     {
         PlaySFX(buttonClickSound);
+    }
+
+    public void PlayGuessSFX()
+    {
+        PlaySFX(guessSound);
     }
 
     // -----------------------------
@@ -110,7 +116,6 @@ public class AudioManager : MonoBehaviour
         sfxSource.Stop();
         sfxSource.loop = false;
     }
-
 
     // -----------------------------
     // VOLUME

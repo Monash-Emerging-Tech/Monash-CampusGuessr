@@ -700,6 +700,8 @@ public class GameLogic : MonoBehaviour
     /// <param name="guessLocation">The guessed location data with z-level support</param>
     private void OnGuessSubmitted(MapInteractionManager.LocationData guessLocation)
     {
+        AudioManager.Instance.PlayGuessSFX();
+
         isGuessing = false;
         LogDebug($"Guess submitted at: latitude:{guessLocation.latitude}, longitude:{guessLocation.longitude}, zLevel: {guessLocation.zLevelName}");
         if (MapInteractionManager.Instance != null && locationManager != null)
