@@ -3042,6 +3042,7 @@ MonoBehaviour:
   hintOutMoveDown: 24
   hintOutLeadTime: 0.35
   cameraIntroStateName: MainMenuCameraStart
+  useMenuScreenAnimationOnSkip: 0
 --- !u!1 &744965497
 GameObject:
   m_ObjectHideFlags: 0
@@ -6823,7 +6824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dda8dbdc5007394e90e23b99676e656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasToShow: {fileID: 1701526511}
+  canvasToShow: {fileID: 1531187516}
   moveStrength: 1
   smoothTime: 0.3
   enableMouseParallax: 1

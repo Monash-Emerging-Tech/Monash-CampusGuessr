@@ -21,6 +21,9 @@ public class IntroSkipController : MonoBehaviour
     [Header("Camera Animator")]
     [SerializeField] private string cameraIntroStateName = "MainMenuCameraStart";
 
+    [Header("Skip Behaviour")]
+    [SerializeField] private bool useMenuScreenAnimationOnSkip = true;
+
     private float holdTimer;
     private bool hasSkipped;
     private bool introFinished;
@@ -110,9 +113,12 @@ public class IntroSkipController : MonoBehaviour
             mainCameraAnimator.Update(0f);
         }
 
-        menuScreenAnimationControl.ShowUI();
+        if (useMenuScreenAnimationOnSkip && menuScreenAnimationControl != null)
+        {
+            menuScreenAnimationControl.ShowUI();
+            menuScreenAnimationControl.SetParallaxEnabled(false);
+        }
 
-        menuScreenAnimationControl.SetParallaxEnabled(false);
         MarkIntroFinished(true);
     }
 
