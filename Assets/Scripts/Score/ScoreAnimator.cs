@@ -33,7 +33,7 @@ public class ScoreAnimator : MonoBehaviour
         float duration = ScoreAnimationSettings.Duration;
         float time = 0f;
 
-        AudioManager.Instance.PlayScoreSFX();
+        //AudioManager.Instance.PlayScoreSFX();
 
         while (time < duration)
         {
@@ -47,7 +47,7 @@ public class ScoreAnimator : MonoBehaviour
             yield return null;
         }
 
-        AudioManager.Instance.StopScoreSFX();
+        //AudioManager.Instance.StopScoreSFX();
         SetText(to);
     }
 
