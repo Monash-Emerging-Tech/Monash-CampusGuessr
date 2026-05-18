@@ -33,6 +33,8 @@ public class ScoreAnimator : MonoBehaviour
         float duration = ScoreAnimationSettings.Duration;
         float time = 0f;
 
+        //AudioManager.Instance.PlayScoreSFX();
+
         while (time < duration)
         {
             time += Time.deltaTime;
@@ -45,6 +47,7 @@ public class ScoreAnimator : MonoBehaviour
             yield return null;
         }
 
+        //AudioManager.Instance.StopScoreSFX();
         SetText(to);
     }
 
@@ -58,4 +61,14 @@ public class ScoreAnimator : MonoBehaviour
                 tmp.text = formatted;
         }
     }
+
+
+    //private void Start()
+    //{
+    //    Test();
+    //}
+    //public void Test()
+    //{
+    //    HandleScoreChanged(1500);
+    //}
 }
