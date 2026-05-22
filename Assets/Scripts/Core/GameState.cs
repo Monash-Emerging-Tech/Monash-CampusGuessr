@@ -4,6 +4,5 @@ public enum GameState
     Loading,
     Guessing,
     RoundEnd,
-    GameEnd,
-    None
+    GameEnd
 }
