@@ -216,8 +216,8 @@ public class MapInteractionManager : MonoBehaviour
             // Calculate score if we have both locations
             if (currentActualLocation != null && currentGuessLocation != null)
             {
-                var (score, distance, floorDiff, tooHigh) = CalculateScore(currentActualLocation, currentGuessLocation);
-                OnScoreCalculated?.Invoke(score, distance, floorDiff, tooHigh);
+                MapGuessScoreResult scoreResult = CalculateScore(currentActualLocation, currentGuessLocation);
+                OnScoreCalculated?.Invoke(scoreResult.Score, scoreResult.Distance, scoreResult.FloorDiff, scoreResult.TooHigh);
 
                 // Show both locations on map
                 ShowBothLocations();
@@ -297,26 +297,22 @@ public class MapInteractionManager : MonoBehaviour
     /// <param name="actual">Actual location data</param>
     /// <param name="guess">Guess location data</param>
     /// <returns>Score from 0 to maxScore</returns>
-    private (int score, int distance, int floorDiff, bool tooHigh) CalculateScore(LocationData actual, LocationData guess)
+    private MapGuessScoreResult CalculateScore(LocationData actual, LocationData guess)
     {
-        // New Scoring Method (considers Z-levels AND distance scale) 18/05/2026
-        float distance = DistanceCalculator.CalculateMeters(actual, guess);
-        int score = ScoreDataScriptableObject.CalculateScore((int)(distance * currentDistanceScale));
+        MapGuessScoreResult result = MapGuessScoreCalculator.Calculate(
+            actual,
+            guess,
+            currentDistanceScale,
+            currentZLevelWeight
+        );
 
-        // Apply z-level penalty
-        int zLevelDiff = Mathf.Abs(actual.zLevel - guess.zLevel);
-        if (zLevelDiff > 0)
+        if (result.HasZLevelPenalty)
         {
-            float zPenalty = Mathf.Min(zLevelDiff * 0.25f * currentZLevelWeight, 1f);
-            float zModifier = 1f - zPenalty;
-            int preZScore = score;
-            score = Mathf.RoundToInt(score * zModifier);
-            LogDebug($"Z-level penalty applied: diff={zLevelDiff}, weight={currentZLevelWeight}, modifier={zModifier:F2}, score {preZScore} -> {score}");
+            LogDebug($"Z-level penalty applied: diff={result.FloorDiff}, weight={currentZLevelWeight}, modifier={result.ZModifier:F2}, score {result.PreZScore} -> {result.Score}");
         }
 
-        LogDebug($"Distance: {distance:F2}m, Score: {score}");
-        bool tooHigh = guess.zLevel > actual.zLevel;
-        return (score, (int)distance, zLevelDiff, tooHigh);;
+        LogDebug($"Distance: {result.ExactDistance:F2}m, Score: {result.Score}");
+        return result;
     }
 
     /// <summary>
