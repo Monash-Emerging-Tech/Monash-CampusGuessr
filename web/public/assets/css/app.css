@@ -32,9 +32,14 @@
    nothing below this block should need to change.
    ============================================================ */
 :root {
-  /* Card shell — navy sampled from the top-right MAP/ROUND/SCORE panel's own
-     background texture (Assets/Sprites/score-banner-blue.png) */
-  --loc-info-bg: #120857;
+  /* Card shell — colors sampled from Assets/Sprites/blue-black-background.png (the
+     background texture used by bottom-bar-round-result.prefab, the round-result panel
+     this card appears alongside), but reoriented left-to-right (black left, blue right)
+     rather than that texture's own top-to-bottom direction, per explicit request.
+     That texture has no baked-in outline, so this card intentionally has none either —
+     see git history around 2026-09 for the pixel sampling. */
+  --loc-info-bg-black: #0a0a19;
+  --loc-info-bg-blue: #190690;
   --loc-info-border-radius: 8px;
   --loc-info-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   --loc-info-z-index: 15;
@@ -257,7 +262,7 @@ html, body { height: 100%; }
      nominal value. See git history around 2026-09 for the getBoundingClientRect() diagnosis. */
   margin-bottom: calc(var(--loc-info-bottom-clear) + 20px);
   max-width: var(--loc-info-max-width);
-  background: var(--loc-info-bg);
+  background: linear-gradient(to right, var(--loc-info-bg-black), var(--loc-info-bg-blue));
   border-radius: var(--loc-info-border-radius);
   padding: var(--loc-info-padding);
   box-shadow: var(--loc-info-shadow);
