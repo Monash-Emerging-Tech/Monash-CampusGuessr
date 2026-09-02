@@ -26,6 +26,37 @@
   font-style: normal;
 }
 
+/* ============================================================
+   Location Info Card — design tokens
+   Edit these to restyle the round-result floor info popup;
+   nothing below this block should need to change.
+   ============================================================ */
+:root {
+  --loc-info-bg: rgba(20, 20, 30, 0.92);
+  --loc-info-border-radius: 8px;
+  --loc-info-padding: 16px 20px;
+  --loc-info-gap: 10px;
+  --loc-info-max-width: clamp(240px, 26vw, 340px);
+  --loc-info-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --loc-info-z-index: 15;
+
+  --loc-info-title-color: #ffffff;
+  --loc-info-title-font-size: 20px;
+  --loc-info-body-color: rgba(255, 255, 255, 0.85);
+  --loc-info-body-font-size: 14px;
+
+  --loc-info-button-bg: #1E04A9;
+  --loc-info-button-bg-hover: #6D6CCB;
+  --loc-info-button-color: #ffffff;
+  --loc-info-button-font-size: 14px;
+
+  /* Placement: matches the viewport-relative approach already used by
+     #maze-map-ui.mm-round-end (vh/vw + clamp, no fixed pixel breakpoints). */
+  --loc-info-edge-gap: 24px;      /* gap from the left/bottom viewport edges */
+  --loc-info-bottom-clear: 17vh;  /* clears the Unity-rendered bottom stats bar */
+  --loc-info-compact-scale: 0.8;  /* size multiplier for the repeat, non-interactive view */
+}
+
 /* Layout helpers */
 html, body { height: 100%; }
 #game-container { /* sizing is mostly inline to avoid breaking template; keep minimal here */ height: 100%; }
@@ -196,4 +227,62 @@ html, body { height: 100%; }
 
 .mm-guess-btn:not(:disabled):active {
   background-color: rgb(3, 43, 85); /* Even darker on click */
+}
+
+/* ============================================================
+   Location Info Card — rules (tokens defined near the top of this file)
+   ============================================================ */
+.location-info-card {
+  position: fixed;
+  left: var(--loc-info-edge-gap);
+  bottom: var(--loc-info-bottom-clear);
+  max-width: var(--loc-info-max-width);
+  background: var(--loc-info-bg);
+  border-radius: var(--loc-info-border-radius);
+  padding: var(--loc-info-padding);
+  box-shadow: var(--loc-info-shadow);
+  z-index: var(--loc-info-z-index);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--loc-info-gap);
+  box-sizing: border-box;
+}
+
+.location-info-card__title {
+  color: var(--loc-info-title-color);
+  font-size: var(--loc-info-title-font-size);
+  font-family: 'OffBit101Bold', sans-serif;
+}
+
+.location-info-card__body {
+  color: var(--loc-info-body-color);
+  font-size: var(--loc-info-body-font-size);
+  font-family: 'OffBitRegular', sans-serif;
+  line-height: 1.4;
+}
+
+.location-info-card__button {
+  align-self: flex-start;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 4px;
+  padding: 8px 16px;
+  background: var(--loc-info-button-bg);
+  color: var(--loc-info-button-color);
+  font-size: var(--loc-info-button-font-size);
+  font-family: 'OffBit101Bold', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.location-info-card__button:hover {
+  background: var(--loc-info-button-bg-hover);
+}
+
+/* Repeat-view: smaller, non-interactive, must never intercept SPACE or clicks meant for the map/round-advance UI. */
+.location-info-card--compact {
+  transform: scale(var(--loc-info-compact-scale));
+  transform-origin: bottom left;
+  pointer-events: none;
 }
