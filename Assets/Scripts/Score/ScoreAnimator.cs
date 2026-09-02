@@ -61,14 +61,4 @@ public class ScoreAnimator : MonoBehaviour
                 tmp.text = formatted;
         }
     }
-
-
-    private void Start()
-    {
-       Test();
-    }
-    public void Test()
-    {
-       HandleScoreChanged(1500);
-    }
 }
