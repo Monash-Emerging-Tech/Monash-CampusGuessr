@@ -249,7 +249,13 @@ html, body { height: 100%; }
 .location-info-card {
   position: fixed;
   left: var(--loc-info-edge-gap);
-  bottom: var(--loc-info-bottom-clear);
+  bottom: 0;
+  /* #maze-map-ui.mm-round-end's own "bottom: 0" is dead code: an inline style="bottom:20px"
+     baked into its element in web/index.html (leftover from its default corner position,
+     never cleared by JS) beats the stylesheet rule, so its real clearance is 17vh + 20px,
+     not 17vh alone. Matching that actual on-screen gap here rather than the class rule's
+     nominal value. See git history around 2026-09 for the getBoundingClientRect() diagnosis. */
+  margin-bottom: calc(var(--loc-info-bottom-clear) + 20px);
   max-width: var(--loc-info-max-width);
   background: var(--loc-info-bg);
   border-radius: var(--loc-info-border-radius);
