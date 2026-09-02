@@ -32,29 +32,43 @@
    nothing below this block should need to change.
    ============================================================ */
 :root {
-  --loc-info-bg: rgba(20, 20, 30, 0.92);
+  /* Card shell — navy sampled from the top-right MAP/ROUND/SCORE panel's own
+     background texture (Assets/Sprites/score-banner-blue.png) */
+  --loc-info-bg: #120857;
   --loc-info-border-radius: 8px;
-  --loc-info-padding: 16px 20px;
-  --loc-info-gap: 10px;
-  --loc-info-max-width: clamp(240px, 26vw, 340px);
   --loc-info-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   --loc-info-z-index: 15;
+  --loc-info-gap: 12px;
+
+  /* Full (first-appearance) sizing */
+  --loc-info-max-width: clamp(340px, 34vw, 480px);
+  --loc-info-padding: 24px 28px;
+  --loc-info-title-font-size: 28px;
+  --loc-info-body-font-size: 18px;
+  --loc-info-badge-font-size: 14px;
+
+  /* Compact (repeat, non-interactive) sizing — smaller, still comfortably readable */
+  --loc-info-compact-max-width: clamp(260px, 24vw, 340px);
+  --loc-info-compact-padding: 16px 20px;
+  --loc-info-compact-title-font-size: 20px;
+  --loc-info-compact-body-font-size: 15px;
+  --loc-info-compact-badge-font-size: 12px;
 
   --loc-info-title-color: #ffffff;
-  --loc-info-title-font-size: 20px;
-  --loc-info-body-color: rgba(255, 255, 255, 0.85);
-  --loc-info-body-font-size: 14px;
+  --loc-info-body-color: rgba(255, 255, 255, 0.9);
 
-  --loc-info-button-bg: #1E04A9;
-  --loc-info-button-bg-hover: #6D6CCB;
-  --loc-info-button-color: #ffffff;
-  --loc-info-button-font-size: 14px;
+  /* Red accent — matches the "NEXT Round [ SPACE ]" button
+     (button-secondary prefab: m_NormalColor / m_HighlightedColor) */
+  --loc-info-accent: #D31F40;
+  --loc-info-accent-hover: #E26B8A;
+  --loc-info-accent-color: #ffffff;
+  --loc-info-button-font-size: 24px; /* matches that button's own text size */
+  --loc-info-button-radius: 4px;     /* matches .mm-guess-btn's border-radius */
 
   /* Placement: matches the viewport-relative approach already used by
      #maze-map-ui.mm-round-end (vh/vw + clamp, no fixed pixel breakpoints). */
   --loc-info-edge-gap: 24px;      /* gap from the left/bottom viewport edges */
   --loc-info-bottom-clear: 17vh;  /* clears the Unity-rendered bottom stats bar */
-  --loc-info-compact-scale: 0.8;  /* size multiplier for the repeat, non-interactive view */
 }
 
 /* Layout helpers */
@@ -245,8 +259,18 @@ html, body { height: 100%; }
 
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--loc-info-gap);
   box-sizing: border-box;
+}
+
+.location-info-card__badge {
+  background: var(--loc-info-accent);
+  color: var(--loc-info-accent-color);
+  font-size: var(--loc-info-badge-font-size);
+  font-family: 'OffBit101Bold', sans-serif;
+  border-radius: var(--loc-info-button-radius);
+  padding: 4px 10px;
 }
 
 .location-info-card__title {
@@ -258,7 +282,7 @@ html, body { height: 100%; }
 .location-info-card__body {
   color: var(--loc-info-body-color);
   font-size: var(--loc-info-body-font-size);
-  font-family: 'OffBitRegular', sans-serif;
+  font-family: 'OffBit101Bold', sans-serif;
   line-height: 1.4;
 }
 
@@ -266,10 +290,10 @@ html, body { height: 100%; }
   align-self: flex-start;
   margin-top: 4px;
   border: 0;
-  border-radius: 4px;
-  padding: 8px 16px;
-  background: var(--loc-info-button-bg);
-  color: var(--loc-info-button-color);
+  border-radius: var(--loc-info-button-radius);
+  padding: 14px 28px;
+  background: var(--loc-info-accent);
+  color: var(--loc-info-accent-color);
   font-size: var(--loc-info-button-font-size);
   font-family: 'OffBit101Bold', sans-serif;
   cursor: pointer;
@@ -277,12 +301,26 @@ html, body { height: 100%; }
 }
 
 .location-info-card__button:hover {
-  background: var(--loc-info-button-bg-hover);
+  background: var(--loc-info-accent-hover);
 }
 
-/* Repeat-view: smaller, non-interactive, must never intercept SPACE or clicks meant for the map/round-advance UI. */
+/* Repeat-view: smaller, non-interactive, must never intercept SPACE or clicks meant for the map/round-advance UI.
+   Sized from its own compact tokens above rather than a blanket transform:scale(), so it can't be
+   shrunk below a comfortable reading size if the full-size tokens change later. */
 .location-info-card--compact {
-  transform: scale(var(--loc-info-compact-scale));
-  transform-origin: bottom left;
+  max-width: var(--loc-info-compact-max-width);
+  padding: var(--loc-info-compact-padding);
   pointer-events: none;
+}
+
+.location-info-card--compact .location-info-card__badge {
+  font-size: var(--loc-info-compact-badge-font-size);
+}
+
+.location-info-card--compact .location-info-card__title {
+  font-size: var(--loc-info-compact-title-font-size);
+}
+
+.location-info-card--compact .location-info-card__body {
+  font-size: var(--loc-info-compact-body-font-size);
 }

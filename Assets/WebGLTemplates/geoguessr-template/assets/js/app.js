@@ -630,7 +630,7 @@
       // Show the floor info card if this mapPack/zLevel combination has content
       var locationInfo = getLocationInfo(locationData.mapPackId, zLevel);
       if (locationInfo) {
-        showLocationInfoCard(locationInfo);
+        showLocationInfoCard(locationInfo, zLevel);
       } else {
         hideLocationInfoCard();
       }
@@ -691,11 +691,16 @@
     }
   }
 
-  function showLocationInfoCard(info) {
+  function showLocationInfoCard(info, zLevel) {
     hideLocationInfoCard();
 
     var card = document.createElement("div");
     card.id = "location-info-card";
+
+    var badge = document.createElement("div");
+    badge.className = "location-info-card__badge";
+    badge.textContent = "Level " + zLevel;
+    card.appendChild(badge);
 
     var title = document.createElement("div");
     title.className = "location-info-card__title";
