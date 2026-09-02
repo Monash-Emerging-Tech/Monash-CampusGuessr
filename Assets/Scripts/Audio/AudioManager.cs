@@ -5,6 +5,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -102,19 +103,48 @@ public class AudioManager : MonoBehaviour
         sfxSource.PlayOneShot(clip);
     }
 
+    private Coroutine scoreFadeRoutine;
+
     public void PlayScoreSFX()
     {
         if (scoreProgressSound == null) return;
 
+        if (scoreFadeRoutine != null)
+        {
+            StopCoroutine(scoreFadeRoutine);
+            scoreFadeRoutine = null;
+        }
+
         sfxSource.clip = scoreProgressSound;
         sfxSource.loop = true;
+        sfxSource.volume = 1f;
         sfxSource.Play();
     }
 
-    public void StopScoreSFX()
+    public void StopScoreSFX(float fadeDuration = 0.3f)
     {
+        if (scoreFadeRoutine != null)
+            StopCoroutine(scoreFadeRoutine);
+
+        scoreFadeRoutine = StartCoroutine(FadeOutScoreSFX(fadeDuration));
+    }
+
+    private IEnumerator FadeOutScoreSFX(float duration)
+    {
+        float startVolume = sfxSource.volume;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            sfxSource.volume = Mathf.Lerp(startVolume, 0f, time / duration);
+            yield return null;
+        }
+
         sfxSource.Stop();
         sfxSource.loop = false;
+        sfxSource.volume = 1f; // reset for next play
+        scoreFadeRoutine = null;
     }
 
     // -----------------------------
