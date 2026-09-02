@@ -239,7 +239,8 @@ public class MapInteractionManager : MonoBehaviour
     /// <param name="latitude">Latitude (x coordinate)</param>
     /// <param name="longitude">Longitude (y coordinate)</param>
     /// <param name="zLevel">Z-level (z coordinate)</param>
-    public void SendActualLocationToJavaScript(float latitude, float longitude, int zLevel)
+    /// <param name="mapPackId">ID of the currently active MapPack</param>
+    public void SendActualLocationToJavaScript(float latitude, float longitude, int zLevel, int mapPackId)
     {
         // Create payload data structure (same format as receiving)
         var locationPayload = new LocationPayload
@@ -247,7 +248,8 @@ public class MapInteractionManager : MonoBehaviour
             latitude = latitude,
             longitude = longitude,
             zLevel = zLevel,
-            zLevelName = ZLevelFormatter.GetName(zLevel)
+            zLevelName = ZLevelFormatter.GetName(zLevel),
+            mapPackId = mapPackId
         };
 
         // Serialize to JSON
@@ -474,6 +476,7 @@ public class MapInteractionManager : MonoBehaviour
         public float longitude;
         public int zLevel;
         public string? zLevelName;
+        public int mapPackId;
     }
 
     // Location data structure with lat, lng, zLevel, zLevelName
