@@ -26,6 +26,56 @@
   font-style: normal;
 }
 
+/* ============================================================
+   Location Info Card — design tokens
+   Edit these to restyle the round-result floor info popup;
+   nothing below this block should need to change.
+   ============================================================ */
+:root {
+  /* Card shell — colors sampled from Assets/Sprites/blue-black-background.png (the
+     background texture used by bottom-bar-round-result.prefab, the round-result panel
+     this card appears alongside), but reoriented left-to-right (black left, blue right)
+     rather than that texture's own top-to-bottom direction, per explicit request.
+     That texture has no baked-in outline, so this card intentionally has none either —
+     see git history around 2026-09 for the pixel sampling. */
+  --loc-info-bg-black: #0a0a19;
+  --loc-info-bg-blue: #190690;
+  --loc-info-border-radius: 8px;
+  --loc-info-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --loc-info-z-index: 15;
+  --loc-info-gap: 12px;
+
+  /* Full (first-appearance) sizing */
+  --loc-info-max-width: clamp(340px, 34vw, 480px);
+  --loc-info-padding: 24px 28px;
+  --loc-info-title-font-size: 28px;
+  --loc-info-body-font-size: 18px;
+  --loc-info-badge-font-size: 14px;
+
+  /* Compact (repeat, non-interactive) sizing — smaller, still comfortably readable */
+  --loc-info-compact-max-width: clamp(260px, 24vw, 340px);
+  --loc-info-compact-padding: 16px 20px;
+  --loc-info-compact-title-font-size: 20px;
+  --loc-info-compact-body-font-size: 15px;
+  --loc-info-compact-badge-font-size: 12px;
+
+  --loc-info-title-color: #ffffff;
+  --loc-info-body-color: rgba(255, 255, 255, 0.9);
+
+  /* Red accent — matches the "NEXT Round [ SPACE ]" button
+     (button-secondary prefab: m_NormalColor / m_HighlightedColor) */
+  --loc-info-accent: #D31F40;
+  --loc-info-accent-hover: #E26B8A;
+  --loc-info-accent-color: #ffffff;
+  --loc-info-button-font-size: 24px; /* matches that button's own text size */
+  --loc-info-button-radius: 4px;     /* matches .mm-guess-btn's border-radius */
+
+  /* Placement: matches the viewport-relative approach already used by
+     #maze-map-ui.mm-round-end (vh/vw + clamp, no fixed pixel breakpoints). */
+  --loc-info-edge-gap: 24px;      /* gap from the left/bottom viewport edges */
+  --loc-info-bottom-clear: 17vh;  /* clears the Unity-rendered bottom stats bar */
+}
+
 /* Layout helpers */
 html, body { height: 100%; }
 #game-container { /* sizing is mostly inline to avoid breaking template; keep minimal here */ height: 100%; }
@@ -196,4 +246,92 @@ html, body { height: 100%; }
 
 .mm-guess-btn:not(:disabled):active {
   background-color: rgb(3, 43, 85); /* Even darker on click */
+}
+
+/* ============================================================
+   Location Info Card — rules (tokens defined near the top of this file)
+   ============================================================ */
+.location-info-card {
+  position: fixed;
+  left: var(--loc-info-edge-gap);
+  bottom: 0;
+  /* #maze-map-ui.mm-round-end's own "bottom: 0" is dead code: an inline style="bottom:20px"
+     baked into its element in web/index.html (leftover from its default corner position,
+     never cleared by JS) beats the stylesheet rule, so its real clearance is 17vh + 20px,
+     not 17vh alone. Matching that actual on-screen gap here rather than the class rule's
+     nominal value. See git history around 2026-09 for the getBoundingClientRect() diagnosis. */
+  margin-bottom: calc(var(--loc-info-bottom-clear) + 20px);
+  max-width: var(--loc-info-max-width);
+  background: linear-gradient(to right, var(--loc-info-bg-black), var(--loc-info-bg-blue));
+  border-radius: var(--loc-info-border-radius);
+  padding: var(--loc-info-padding);
+  box-shadow: var(--loc-info-shadow);
+  z-index: var(--loc-info-z-index);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--loc-info-gap);
+  box-sizing: border-box;
+}
+
+.location-info-card__badge {
+  background: var(--loc-info-accent);
+  color: var(--loc-info-accent-color);
+  font-size: var(--loc-info-badge-font-size);
+  font-family: 'OffBit101Bold', sans-serif;
+  border-radius: var(--loc-info-button-radius);
+  padding: 4px 10px;
+}
+
+.location-info-card__title {
+  color: var(--loc-info-title-color);
+  font-size: var(--loc-info-title-font-size);
+  font-family: 'OffBit101Bold', sans-serif;
+}
+
+.location-info-card__body {
+  color: var(--loc-info-body-color);
+  font-size: var(--loc-info-body-font-size);
+  font-family: 'OffBit101Bold', sans-serif;
+  line-height: 1.4;
+}
+
+.location-info-card__button {
+  align-self: flex-start;
+  margin-top: 4px;
+  border: 0;
+  border-radius: var(--loc-info-button-radius);
+  padding: 14px 28px;
+  background: var(--loc-info-accent);
+  color: var(--loc-info-accent-color);
+  font-size: var(--loc-info-button-font-size);
+  font-family: 'OffBit101Bold', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.location-info-card__button:hover {
+  background: var(--loc-info-accent-hover);
+}
+
+/* Repeat-view: smaller, non-interactive, must never intercept SPACE or clicks meant for the map/round-advance UI.
+   Sized from its own compact tokens above rather than a blanket transform:scale(), so it can't be
+   shrunk below a comfortable reading size if the full-size tokens change later. */
+.location-info-card--compact {
+  max-width: var(--loc-info-compact-max-width);
+  padding: var(--loc-info-compact-padding);
+  pointer-events: none;
+}
+
+.location-info-card--compact .location-info-card__badge {
+  font-size: var(--loc-info-compact-badge-font-size);
+}
+
+.location-info-card--compact .location-info-card__title {
+  font-size: var(--loc-info-compact-title-font-size);
+}
+
+.location-info-card--compact .location-info-card__body {
+  font-size: var(--loc-info-compact-body-font-size);
 }

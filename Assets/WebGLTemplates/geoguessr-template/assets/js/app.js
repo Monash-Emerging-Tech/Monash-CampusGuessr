@@ -1,6 +1,7 @@
 (function () {
   var pinActive = false; // false = inactive (auto-collapse allowed), true = active (pinned)
   var isGuessingState = true; // true = guessing, false = results/end-round
+  var hasShownLocationInfo = false; // in-memory only, resets on page reload
   // --------------------------------------------------------------- MAZE MAP INITIALIZATION
   function isMazeMapReady() {
     if (typeof mazemap !== "undefined" && typeof mazemap.Map === "function")
@@ -425,6 +426,10 @@
     }
 
     updateGuessButtonState(false);
+
+    // Clear any leftover location info card from the previous round's result
+    // so it doesn't linger on screen through the next round's guessing phase.
+    hideLocationInfoCard();
   }
 
   // --------------------------------------------------------------- Z-LEVEL NAME HELPER
@@ -621,6 +626,14 @@
         center: [lng, lat],
         zoom: map.getZoom(),
       });
+
+      // Show the floor info card if this mapPack/zLevel combination has content
+      var locationInfo = getLocationInfo(locationData.mapPackId, zLevel);
+      if (locationInfo) {
+        showLocationInfoCard(locationInfo, zLevel);
+      } else {
+        hideLocationInfoCard();
+      }
     } catch (error) {
       console.error("Error adding actual location from Unity:", error);
       console.error("Payload received:", jsonPayload);
@@ -629,6 +642,105 @@
 
   // Expose to global scope for Unity to call
   window.addActualLocationFromUnity = addActualLocationFromUnity;
+
+  // --------------------------------------------------------------- LOCATION INFO POPUP
+  // Per-floor info card content, keyed by MapPack ID then zLevel.
+  // Add more entries here for other floors/campuses — no logic changes needed.
+  var LOCATION_INFO = {
+    4: {
+      // Monash College
+      2: {
+        title: "Concierge",
+        body: "The Concierge can help you with first aid, lost property, and borrowing sports equipment. It's your quick-help point for anything you need on campus.",
+      },
+      4: {
+        title: "Student hub",
+        body: "Find all your key student services here: Student Administration, Student Engagement, Counselling, Career Advisors, Safer Community Unit and Accommodation. You can also use the Calm Room in 4.30 to relax.",
+      },
+      5: {
+        title: "Library",
+        body: "Use your digital M-Pass to print, borrow books and magazines, and join Library clubs and activities. It's also a great place to meet with friends and study.",
+      },
+      6: {
+        title: "Student learning hub",
+        body: "Meet with Student Success Advisors and Peer Mentors for study support, find quiet study areas, and book group study rooms.",
+      },
+    },
+  };
+
+  function getLocationInfo(mapPackId, zLevel) {
+    var pack = LOCATION_INFO[mapPackId];
+    if (!pack) return null;
+    return pack[zLevel] || null;
+  }
+
+  // Calls the same Unity entry point a "Next Round" button would (GameLogic.OnNextRoundButtonPressed).
+  // SPACE itself needs no wiring here: Unity's own Update() loop reads the keypress directly and
+  // already advances the round regardless of what's on screen in this HTML overlay.
+  function advanceToNextRound() {
+    var unityInstance = getUnityInstance();
+    if (unityInstance && typeof unityInstance.SendMessage === "function") {
+      unityInstance.SendMessage("GameLogic", "OnNextRoundButtonPressed", "");
+    }
+  }
+
+  function hideLocationInfoCard() {
+    var card = document.getElementById("location-info-card");
+    if (card && card.parentNode) {
+      card.parentNode.removeChild(card);
+    }
+  }
+
+  function showLocationInfoCard(info, zLevel) {
+    hideLocationInfoCard();
+
+    var card = document.createElement("div");
+    card.id = "location-info-card";
+
+    var badge = document.createElement("div");
+    badge.className = "location-info-card__badge";
+    badge.textContent = "Level " + zLevel;
+    card.appendChild(badge);
+
+    var title = document.createElement("div");
+    title.className = "location-info-card__title";
+    title.textContent = info.title;
+    card.appendChild(title);
+
+    var body = document.createElement("div");
+    body.className = "location-info-card__body";
+    body.textContent = info.body;
+    card.appendChild(body);
+
+    if (!hasShownLocationInfo) {
+      card.className = "location-info-card";
+
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "location-info-card__button";
+      button.textContent = "Next round";
+      button.addEventListener("click", function () {
+        hideLocationInfoCard();
+        advanceToNextRound();
+      });
+      // If this button ever ends up focused (e.g. keyboard Tab), stop the browser's
+      // native Space-activates-focused-button behavior so a Space press can't also
+      // fire this button's click — Unity's own Input.GetKeyDown(Space) poll stays
+      // the only path that advances the round. Scoped to this button only.
+      button.addEventListener("keydown", function (event) {
+        if (event.key === " " || event.code === "Space") {
+          event.preventDefault();
+        }
+      });
+      card.appendChild(button);
+
+      hasShownLocationInfo = true;
+    } else {
+      card.className = "location-info-card location-info-card--compact";
+    }
+
+    document.body.appendChild(card);
+  }
 
   function getLeafletMap(map) {
     if (!map) return null;
@@ -679,6 +791,11 @@
     } else {
       console.error("maze-map-ui element not found");
     }
+    // Covers every path that hides the map: normal round-end (EndRound), the
+    // final round -> BreakdownScene (EndGame), and returning to the main menu
+    // (LoadMapSelection) - so a leftover round-result card never persists past
+    // any of those instead of only clearing on the next round's own start.
+    hideLocationInfoCard();
   }
 
   // Expose to global scope for Unity to call

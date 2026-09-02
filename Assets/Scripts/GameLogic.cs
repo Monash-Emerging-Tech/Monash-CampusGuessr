@@ -708,7 +708,7 @@ public class GameLogic : MonoBehaviour
         if (MapInteractionManager.Instance != null && locationManager != null)
         {
             var location = locationManager.GetCurrentLocation();
-            MapInteractionManager.Instance.SendActualLocationToJavaScript(location.latitude, location.longitude, location.zLevel);
+            MapInteractionManager.Instance.SendActualLocationToJavaScript(location.latitude, location.longitude, location.zLevel, resolvedMapPackId);
             MapInteractionManager.Instance.ShowBothLocations();
             MapInteractionManager.Instance.ShowMap();
             MapInteractionManager.Instance.SetWebGuessingState(false);
