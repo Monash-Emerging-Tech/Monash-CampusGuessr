@@ -791,6 +791,11 @@
     } else {
       console.error("maze-map-ui element not found");
     }
+    // Covers every path that hides the map: normal round-end (EndRound), the
+    // final round -> BreakdownScene (EndGame), and returning to the main menu
+    // (LoadMapSelection) - so a leftover round-result card never persists past
+    // any of those instead of only clearing on the next round's own start.
+    hideLocationInfoCard();
   }
 
   // Expose to global scope for Unity to call
