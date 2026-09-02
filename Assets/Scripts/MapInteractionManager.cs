@@ -1,7 +1,6 @@
 
 #nullable enable
 using UnityEngine;
-using System.Collections.Generic;
 using System;
 
 
@@ -14,29 +13,6 @@ using System;
 /// </summary>
 public class MapInteractionManager : MonoBehaviour
 {
-    // WebGL JavaScript interop
-#if UNITY_WEBGL && !UNITY_EDITOR
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void showMapFromUnity();
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void hideMapFromUnity();
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void addActualLocationFromUnity(string json);
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void setGuessingStateFromUnity(bool isGuessing);
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void mmSetWidgetSize(string size);
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void clearMapStateFromUnity();
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void updateScoreFromUnity(int score, int round);
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void showLoading(bool show);
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void addMarkerFromUnity(float lat, float lng, string label, string type);
-    [System.Runtime.InteropServices.DllImport("__Internal")]
-    private static extern void setMapPackViewFromUnity(int campusId, float lat, float lng, int zoom);
-#endif
     [Header("Map Settings")]
     [SerializeField] private bool enableMapOnStart = false;
     [SerializeField] private float maxGuessDistance = 1000f; // Maximum distance for scoring in meters
@@ -110,13 +86,7 @@ public class MapInteractionManager : MonoBehaviour
 
         isMapActive = true;
 
-        // Call JavaScript function to show map
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-    showMapFromUnity();
-#else
-        LogDebug("Map would be shown (WebGL only)");
-#endif
+        WebMapBridge.ShowMap(enableDebugLogs);
 
         OnMapOpened?.Invoke();
         LogDebug("Map opened");
@@ -131,12 +101,7 @@ public class MapInteractionManager : MonoBehaviour
 
         isMapActive = false;
 
-        // Call JavaScript function to hide map
-#if UNITY_WEBGL && !UNITY_EDITOR
-    hideMapFromUnity();
-#else
-        LogDebug("Map would be hidden (WebGL only)");
-#endif
+        WebMapBridge.HideMap(enableDebugLogs);
 
         OnMapClosed?.Invoke();
         LogDebug("Map closed");
@@ -159,7 +124,7 @@ public class MapInteractionManager : MonoBehaviour
             latitude = latitude,
             longitude = longitude,
             zLevel = Mathf.RoundToInt(zLevel),
-            zLevelName = GetZLevelName(Mathf.RoundToInt(zLevel))
+            zLevelName = ZLevelFormatter.GetName(Mathf.RoundToInt(zLevel))
         };
 
         // Create enhanced marker data
@@ -168,10 +133,10 @@ public class MapInteractionManager : MonoBehaviour
             lat = latitude,
             lng = longitude,
             zLevel = Mathf.RoundToInt(zLevel),
-            zLevelName = GetZLevelName(Mathf.RoundToInt(zLevel))
+            zLevelName = ZLevelFormatter.GetName(Mathf.RoundToInt(zLevel))
         };
 
-        LogDebug($"Actual location set to: Latitude:{latitude}, Longitude:{longitude}, zLevel:{zLevel}, zLevelName:{GetZLevelName(Mathf.RoundToInt(zLevel))}");
+        LogDebug($"Actual location set to: Latitude:{latitude}, Longitude:{longitude}, zLevel:{zLevel}, zLevelName:{ZLevelFormatter.GetName(Mathf.RoundToInt(zLevel))}");
     }
 
     /// <summary>
@@ -197,56 +162,18 @@ public class MapInteractionManager : MonoBehaviour
     {
         try
         {
-            // Try to parse as enhanced data first
-            var enhancedData = JsonUtility.FromJson<EnhancedMapClickData>(jsonData);
-            if (enhancedData != null && !string.IsNullOrEmpty(enhancedData.zLevelName))
+            if (GuessPayloadParser.TryParseMapClick(jsonData, currentZLevel, out var parsedGuess))
             {
-                // Enhanced data with z-level
-
-                currentGuessLocation = new LocationData
+                currentGuessLocation = parsedGuess.Location;
+                if (parsedGuess.HasMarker)
                 {
-                    latitude = enhancedData.latitude,
-                    longitude = enhancedData.longitude,
-                    zLevel = enhancedData.zLevel,
-                    zLevelName = enhancedData.zLevelName
-                };
-
-                // Create enhanced marker data
-                currentGuessMarker = new MarkerData
-                {
-                    id = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString(),
-                    lng = enhancedData.longitude,
-                    lat = enhancedData.latitude,
-                    zLevel = enhancedData.zLevel,
-                    zLevelName = enhancedData.zLevelName,
-                    timestamp = enhancedData.timestamp.ToString(),
-                    options = new MarkerOptions
-                    {
-                        imgUrl = "images/handthing.svg",
-                        imgScale = 1.7f,
-                        color = "white",
-                        size = 60,
-                        innerCircle = false,
-                        shape = "marker",
-                        zLevel = enhancedData.zLevel
-                    },
-                    markerType = "player"
-                };
-
-                LogDebug($"Map clicked at: {enhancedData.latitude}, {enhancedData.longitude}, Level: {enhancedData.zLevelName}");
+                    currentGuessMarker = parsedGuess.Marker;
+                }
+                LogDebug(parsedGuess.LogMessage);
             }
             else
             {
-                // Fallback to legacy data
-                var clickData = JsonUtility.FromJson<MapClickData>(jsonData);
-                currentGuessLocation = new LocationData
-                {
-                    latitude = clickData.latitude,
-                    longitude = clickData.longitude,
-                    zLevel = currentZLevel,
-                    zLevelName = GetZLevelName(currentZLevel)
-                };
-                LogDebug($"Map clicked at: {clickData.latitude}, {clickData.longitude} (legacy data)");
+                LogWarning("Could not parse map click data from JSON");
             }
         }
         catch (Exception e)
@@ -266,85 +193,18 @@ public class MapInteractionManager : MonoBehaviour
         {
             LogDebug($"SubmitGuess called on instance: {this.GetInstanceID()}, currentActualLocation is null: {currentActualLocation == null}");
 
-            // Try to parse enhanced payload first
-            var payload = JsonUtility.FromJson<LocationPayload>(jsonData);
-            if (payload != null && !string.IsNullOrEmpty(payload.zLevelName))
+            if (GuessPayloadParser.TryParseSubmittedGuess(jsonData, currentZLevel, out var parsedGuess))
             {
-                // Enhanced data with z-level
-                currentGuessLocation = new LocationData
+                currentGuessLocation = parsedGuess.Location;
+                if (parsedGuess.HasMarker)
                 {
-                    latitude = payload.latitude,
-                    longitude = payload.longitude,
-                    zLevel = payload.zLevel,
-                    zLevelName = payload.zLevelName
-                };
-
-                // Create enhanced marker data for guess
-                currentGuessMarker = new MarkerData
-                {
-                    id = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString(),
-                    lng = payload.longitude,
-                    lat = payload.latitude,
-                    zLevel = payload.zLevel,
-                    zLevelName = payload.zLevelName,
-                    timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString(),
-                    options = new MarkerOptions
-                    {
-                        imgUrl = "images/handthing.svg",
-                        imgScale = 1.7f,
-                        color = "white",
-                        size = 60,
-                        innerCircle = false,
-                        shape = "marker",
-                        zLevel = payload.zLevel
-                    },
-                    markerType = "player"
-                };
-
-                LogDebug($"Guess submitted at: latitude:{payload.latitude}, longitude:{payload.longitude}, zLevel: {payload.zLevelName}");
+                    currentGuessMarker = parsedGuess.Marker;
+                }
+                LogDebug(parsedGuess.LogMessage);
             }
             else
             {
-                // Fallback to legacy data
-                var guessData = JsonUtility.FromJson<MapClickData>(jsonData);
-                if (guessData != null)
-                {
-                    currentGuessLocation = new LocationData
-                    {
-                        latitude = guessData.latitude,
-                        longitude = guessData.longitude,
-                        zLevel = currentZLevel,
-                        zLevelName = GetZLevelName(currentZLevel)
-                    };
-
-                    // Create basic marker data for legacy guess
-                    currentGuessMarker = new MarkerData
-                    {
-                        id = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString(),
-                        lng = guessData.longitude,
-                        lat = guessData.latitude,
-                        zLevel = currentZLevel, // Use current z-level
-                        zLevelName = GetZLevelName(currentZLevel),
-                        timestamp = guessData.timestamp.ToString(),
-                        options = new MarkerOptions
-                        {
-                            imgUrl = "images/handthing.svg",
-                            imgScale = 1.7f,
-                            color = "white",
-                            size = 60,
-                            innerCircle = false,
-                            shape = "marker",
-                            zLevel = currentZLevel
-                        },
-                        markerType = "player"
-                    };
-
-                    LogDebug($"Guess submitted at: {guessData.latitude}, {guessData.longitude} (legacy data)");
-                }
-                else
-                {
-                    LogWarning("Could not parse guess data from JSON");
-                }
+                LogWarning("Could not parse guess data from JSON");
             }
 
             // Trigger guess submitted event
@@ -356,8 +216,8 @@ public class MapInteractionManager : MonoBehaviour
             // Calculate score if we have both locations
             if (currentActualLocation != null && currentGuessLocation != null)
             {
-                var (score, distance, floorDiff, tooHigh) = CalculateScore(currentActualLocation, currentGuessLocation);
-                OnScoreCalculated?.Invoke(score, distance, floorDiff, tooHigh);
+                MapGuessScoreResult scoreResult = CalculateScore(currentActualLocation, currentGuessLocation);
+                OnScoreCalculated?.Invoke(scoreResult.Score, scoreResult.Distance, scoreResult.FloorDiff, scoreResult.TooHigh);
 
                 // Show both locations on map
                 ShowBothLocations();
@@ -387,17 +247,13 @@ public class MapInteractionManager : MonoBehaviour
             latitude = latitude,
             longitude = longitude,
             zLevel = zLevel,
-            zLevelName = GetZLevelName(zLevel)
+            zLevelName = ZLevelFormatter.GetName(zLevel)
         };
 
         // Serialize to JSON
         string jsonPayload = JsonUtility.ToJson(locationPayload);
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-    addActualLocationFromUnity(jsonPayload);
-#else
-        LogDebug($"Actual location would be sent to JavaScript: ({latitude}, {longitude}), Level: {GetZLevelName(zLevel)}");
-#endif
+        WebMapBridge.AddActualLocation(jsonPayload, latitude, longitude, zLevel, enableDebugLogs);
     }
 
     /// <summary>
@@ -405,11 +261,7 @@ public class MapInteractionManager : MonoBehaviour
     /// </summary>
     public void SetWebGuessingState(bool isGuessing)
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-    setGuessingStateFromUnity(isGuessing);
-#else
-        LogDebug($"Guessing state would be sent to JavaScript: {(isGuessing ? "Guessing" : "Results")}");
-#endif
+        WebMapBridge.SetGuessingState(isGuessing, enableDebugLogs);
     }
 
     /// <summary>
@@ -417,11 +269,7 @@ public class MapInteractionManager : MonoBehaviour
     /// </summary>
     public void SetWebMapSize(string size)
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-    mmSetWidgetSize(size);
-#else
-        LogDebug($"Map size would be sent to JavaScript: {size}");
-#endif
+        WebMapBridge.SetMapSize(size, enableDebugLogs);
     }
 
     /// <summary>
@@ -429,24 +277,16 @@ public class MapInteractionManager : MonoBehaviour
     /// </summary>
     public void ClearWebMapState()
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-    clearMapStateFromUnity();
-#else
-        LogDebug("Map state would be cleared on JavaScript");
-#endif
+        WebMapBridge.ClearMapState(enableDebugLogs);
     }
     
-/// <summary>
-/// Sets the map center, zoom level, and campus (triggers MazeMap reinit if campus changes).
-/// </summary>
-public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159)
-{
-#if UNITY_WEBGL && !UNITY_EDITOR
-    setMapPackViewFromUnity(campusId, lat, lng, zoom);
-#else
-    LogDebug($"Map center would be set to: {lat}, {lng}, zoom: {zoom}, campusId: {campusId}");
-#endif
-}
+    /// <summary>
+    /// Sets the map center, zoom level, and campus (triggers MazeMap reinit if campus changes).
+    /// </summary>
+    public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159)
+    {
+        WebMapBridge.SetMapCenter(lat, lng, zoom, campusId, enableDebugLogs);
+    }
     #endregion
 
     #region Scoring System
@@ -457,44 +297,22 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     /// <param name="actual">Actual location data</param>
     /// <param name="guess">Guess location data</param>
     /// <returns>Score from 0 to maxScore</returns>
-    private (int score, int distance, int floorDiff, bool tooHigh) CalculateScore(LocationData actual, LocationData guess)
+    private MapGuessScoreResult CalculateScore(LocationData actual, LocationData guess)
     {
-        // New Scoring Method (considers Z-levels AND distance scale) 18/05/2026
-        float distance = CalculateDistance(actual, guess);
-        int score = ScoreDataScriptableObject.CalculateScore((int)(distance * currentDistanceScale));
+        MapGuessScoreResult result = MapGuessScoreCalculator.Calculate(
+            actual,
+            guess,
+            currentDistanceScale,
+            currentZLevelWeight
+        );
 
-        // Apply z-level penalty
-        int zLevelDiff = Mathf.Abs(actual.zLevel - guess.zLevel);
-        if (zLevelDiff > 0)
+        if (result.HasZLevelPenalty)
         {
-            float zPenalty = Mathf.Min(zLevelDiff * 0.25f * currentZLevelWeight, 1f);
-            float zModifier = 1f - zPenalty;
-            int preZScore = score;
-            score = Mathf.RoundToInt(score * zModifier);
-            LogDebug($"Z-level penalty applied: diff={zLevelDiff}, weight={currentZLevelWeight}, modifier={zModifier:F2}, score {preZScore} -> {score}");
+            LogDebug($"Z-level penalty applied: diff={result.FloorDiff}, weight={currentZLevelWeight}, modifier={result.ZModifier:F2}, score {result.PreZScore} -> {result.Score}");
         }
 
-        LogDebug($"Distance: {distance:F2}m, Score: {score}");
-        bool tooHigh = guess.zLevel > actual.zLevel;
-        return (score, (int)distance, zLevelDiff, tooHigh);;
-    }
-
-    /// <summary>
-    /// Calculates distance between two coordinates using simple approximation
-    /// Accurate enough for campus distances (under 5km)
-    /// </summary>
-    /// <param name="coord1">First location data</param>
-    /// <param name="coord2">Second location data</param>
-    /// <returns>Distance in meters</returns>
-    private float CalculateDistance(LocationData coord1, LocationData coord2)
-    {
-        // Convert degrees to approximate meters
-        // 1 degree latitude ~ 111,000 meters
-        // 1 degree longitude ~ 111,000 * cos(latitude) meters
-        float latDiff = (coord2.latitude - coord1.latitude) * 111000f;
-        float lngDiff = (coord2.longitude - coord1.longitude) * 111000f * Mathf.Cos(coord1.latitude * Mathf.Deg2Rad);
-
-        return Mathf.Sqrt(latDiff * latDiff + lngDiff * lngDiff);
+        LogDebug($"Distance: {result.ExactDistance:F2}m, Score: {result.Score}");
+        return result;
     }
 
     /// <summary>
@@ -523,11 +341,7 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     /// <param name="round">Current round</param>
     public void UpdateScoreDisplay(int score, int round)
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-    updateScoreFromUnity(score, round);
-#else
-        LogDebug($"Score would be updated: {score}, Round: {round}");
-#endif
+        WebMapBridge.UpdateScoreDisplay(score, round, enableDebugLogs);
     }
 
     /// <summary>
@@ -536,11 +350,7 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     /// <param name="show">Whether to show or hide loading</param>
     public void ShowLoading(bool show)
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-    showLoading(show);
-#else
-        LogDebug($"Loading would be {(show ? "shown" : "hidden")}");
-#endif
+        WebMapBridge.ShowLoading(show, enableDebugLogs);
     }
 
     #endregion
@@ -554,15 +364,8 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     {
         if (currentActualLocation == null || currentGuessLocation == null) return;
 
-
-        // Add actual location marker
-#if UNITY_WEBGL && !UNITY_EDITOR
-    addMarkerFromUnity(currentActualLocation.latitude, currentActualLocation.longitude, "Actual Location", "actual");
-#endif
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-    addMarkerFromUnity(currentGuessLocation.latitude, currentGuessLocation.longitude, "Your Guess", "guess");
-#endif
+        WebMapBridge.AddMarker(currentActualLocation.latitude, currentActualLocation.longitude, "Actual Location", "actual", enableDebugLogs);
+        WebMapBridge.AddMarker(currentGuessLocation.latitude, currentGuessLocation.longitude, "Your Guess", "guess", enableDebugLogs);
 
         LogDebug("Both locations displayed on map");
     }
@@ -595,34 +398,6 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     #region Z-Level Management
 
     /// <summary>
-    /// Converts z-level number to readable name
-    /// </summary>
-    /// <param name="zLevel">Z-level number</param>
-    /// <returns>Readable level name</returns>
-    private string GetZLevelName(int zLevel)
-    {
-        if (zLevel == -4) return "P4 (Parking Level 4)";
-        if (zLevel == -3) return "P3 (Parking Level 3)";
-        if (zLevel == -2) return "P2 (Parking Level 2)";
-        if (zLevel == -1) return "P1 (Parking Level 1)";
-        if (zLevel == 0) return "LG (Lower Ground)";
-        if (zLevel == 1) return "G (Ground)";
-        if (zLevel == 2) return "1 (First Floor)";
-        if (zLevel == 3) return "2 (Second Floor)";
-        if (zLevel == 4) return "3 (Third Floor)";
-        if (zLevel == 5) return "4 (Fourth Floor)";
-        if (zLevel == 6) return "5 (Fifth Floor)";
-        if (zLevel == 7) return "6 (Sixth Floor)";
-        if (zLevel == 8) return "7 (Seventh Floor)";
-        if (zLevel == 9) return "8 (Eighth Floor)";
-        if (zLevel == 10) return "9 (Ninth Floor)";
-        if (zLevel == 11) return "10 (Tenth Floor)";
-        if (zLevel == 12) return "11 (Eleventh Floor)";
-        if (zLevel < -4) return $"B{Math.Abs(zLevel)} (Basement {Math.Abs(zLevel)})";
-        return $"{zLevel} (Level {zLevel})";
-    }
-
-    /// <summary>
     /// Validates if a z-level is within allowed range
     /// </summary>
     /// <param name="zLevel">Z-level to validate</param>
@@ -642,7 +417,7 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
         {
             currentZLevel = zLevel;
             OnZLevelChanged?.Invoke(zLevel);
-            LogDebug($"Z-level changed to: {GetZLevelName(zLevel)}");
+            LogDebug($"Z-level changed to: {ZLevelFormatter.GetName(zLevel)}");
         }
         else
         {
@@ -663,17 +438,6 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
     #endregion
 
     #region Data Structures
-
-    // Enhanced data structure for JSON parsing with z-level support
-    [System.Serializable]
-    public class EnhancedMapClickData
-    {
-        public float latitude;
-        public float longitude;
-        public int zLevel;
-        public string? zLevelName;
-        public long timestamp;
-    }
 
     // Custom marker options for visual customization
     [System.Serializable]
@@ -700,15 +464,6 @@ public void SetMapCenter(float lat, float lng, int zoom = 16, int campusId = 159
         public string? timestamp;
         public MarkerOptions? options;
         public string? markerType; // "player" or "actual"
-    }
-
-    // Legacy data structure for backward compatibility
-    [System.Serializable]
-    private class MapClickData
-    {
-        public float latitude;
-        public float longitude;
-        public long timestamp;
     }
 
     // Data structure for sending/receiving location payload data (same format for both directions)
