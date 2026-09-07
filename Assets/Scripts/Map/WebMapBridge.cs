@@ -26,6 +26,10 @@ public static class WebMapBridge
     private static extern void addMarkerFromUnity(float lat, float lng, string label, string type);
     [System.Runtime.InteropServices.DllImport("__Internal")]
     private static extern void setMapPackViewFromUnity(int campusId, float lat, float lng, int zoom);
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern void sendRoundScoreDataFromUnity(float exactDistance, bool floorCorrect, int score);
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern void submitGameFromUnity(string teamName);
 #endif
 
     public static void ShowMap(bool enableDebugLogs = true)
@@ -115,6 +119,24 @@ public static class WebMapBridge
         addMarkerFromUnity(lat, lng, label, type);
 #else
         LogDebug($"Marker would be added: {label} at {lat}, {lng} ({type})", enableDebugLogs);
+#endif
+    }
+
+    public static void SendScoreData(float exactDistance, bool floorCorrect, int score, bool enableDebugLogs = true)
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        sendRoundScoreDataFromUnity(exactDistance, floorCorrect, score);
+#else
+        LogDebug($"Score data would be sent to JavaScript: distance={exactDistance}m, floorCorrect={floorCorrect}, score={score}", enableDebugLogs);
+#endif
+    }
+
+    public static void SubmitGame(string teamName, bool enableDebugLogs = true)
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        submitGameFromUnity(teamName);
+#else
+        LogDebug($"Game would be submitted to JavaScript: teamName={teamName}", enableDebugLogs);
 #endif
     }
 

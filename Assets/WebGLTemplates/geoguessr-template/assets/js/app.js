@@ -2,6 +2,51 @@
   var pinActive = false; // false = inactive (auto-collapse allowed), true = active (pinned)
   var isGuessingState = true; // true = guessing, false = results/end-round
   var hasShownLocationInfo = false; // in-memory only, resets on page reload
+
+  // --------------------------------------------------------------- DATA CAPTURE STATE
+  // session id: regenerated whenever roundNumber === 1 arrives (see addActualLocationFromUnity),
+  // since the Unity scene reloads on "Play Again" but this page/JS context does not - a session id
+  // set once on page load would incorrectly span multiple playthroughs on a shared device.
+  var currentSessionId = null;
+  // Read once on page load and held for the life of the page (no Unity involvement needed).
+  var orientationPeriod = null;
+  try {
+    orientationPeriod = new URLSearchParams(window.location.search).get("period");
+  } catch (e) {
+    console.error("Failed to read orientation period from URL:", e);
+  }
+
+  // Round timing: recorded when setGuessingStateFromUnity(true) fires (round becomes playable),
+  // consumed when it fires (false) (guess submitted) to compute round_duration_ms.
+  var roundStartTimestamp = null;
+  // Accumulates one round's data across setGuessingStateFromUnity(false) and
+  // addActualLocationFromUnity (GameLogic.OnGuessSubmitted actually calls
+  // SendActualLocationToJavaScript *before* SetWebGuessingState(false), so
+  // addActualLocationFromUnity fires first - order-dependent assembly broke on this).
+  // Whichever of the two fires first creates it via ensurePendingRoundData(); the other
+  // merges into the same object. sendRoundScoreDataFromUnity fires last (via
+  // OnScoreCalculated, confirmed after OnGuessSubmitted completes) and submits it.
+  var pendingRoundData = null;
+
+  function ensurePendingRoundData() {
+    if (!pendingRoundData) {
+      pendingRoundData = {};
+    }
+    return pendingRoundData;
+  }
+
+  function generateId() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+      return window.crypto.randomUUID();
+    }
+    // Fallback for environments without crypto.randomUUID (non-secure context / older browser).
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+      var r = (Math.random() * 16) | 0;
+      var v = c === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
   // --------------------------------------------------------------- MAZE MAP INITIALIZATION
   function isMazeMapReady() {
     if (typeof mazemap !== "undefined" && typeof mazemap.Map === "function")
@@ -567,6 +612,137 @@
     return null;
   }
 
+  // --------------------------------------------------------------- DATA API + RETRY BUFFER
+  var DATA_API_BASE = "https://campusguessr-data.campusguessr-data.workers.dev";
+  var RETRY_BUFFER_KEY = "campusguessr_pending_submissions";
+  var RETRY_INTERVAL_MS = 20000;
+  // Tracks clientIds currently mid-flight so an overlapping trigger (e.g. the retry interval
+  // firing while the 'online' event is also flushing) can't send the same payload twice at once.
+  var inFlightClientIds = {};
+
+  function loadRetryBuffer() {
+    try {
+      var raw = localStorage.getItem(RETRY_BUFFER_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      console.error("Failed to read retry buffer:", e);
+      return [];
+    }
+  }
+
+  function saveRetryBuffer(items) {
+    try {
+      localStorage.setItem(RETRY_BUFFER_KEY, JSON.stringify(items));
+    } catch (e) {
+      console.error("Failed to persist retry buffer:", e);
+    }
+  }
+
+  function bufferForRetry(item) {
+    var items = loadRetryBuffer();
+    if (!items.some(function (i) { return i.clientId === item.clientId; })) {
+      items.push(item);
+      saveRetryBuffer(items);
+    }
+  }
+
+  function removeFromRetryBuffer(clientId) {
+    var items = loadRetryBuffer().filter(function (i) { return i.clientId !== clientId; });
+    saveRetryBuffer(items);
+  }
+
+  // Sends one item; on failure (network error or non-2xx), buffers it for the next retry pass.
+  function attemptSend(item) {
+    if (inFlightClientIds[item.clientId]) return;
+    inFlightClientIds[item.clientId] = true;
+
+    fetch(DATA_API_BASE + item.path, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(item.payload),
+    })
+      .then(function (res) {
+        delete inFlightClientIds[item.clientId];
+        if (res.ok) {
+          removeFromRetryBuffer(item.clientId);
+          return;
+        }
+
+        res.text().then(function (body) {
+          console.error("Data API rejected " + item.path + ":", res.status, body);
+        }).catch(function () {});
+
+        if (res.status >= 500) {
+          // Server-side failure - transient, worth retrying.
+          bufferForRetry(item);
+        } else {
+          // 4xx means the payload itself is invalid; retrying it unchanged will never
+          // succeed. Drop it instead of re-buffering, so it doesn't retry forever with
+          // no backoff (this was firing dozens of identical retries in rapid succession).
+          console.error("Data API permanently rejected " + item.path + " (status " + res.status + ") - dropping, not retrying. Payload:", item.payload);
+          removeFromRetryBuffer(item.clientId);
+        }
+      })
+      .catch(function (error) {
+        delete inFlightClientIds[item.clientId];
+        // Network-level failure (fetch threw, no response at all) - genuinely transient.
+        console.error("Data API request failed, buffering for retry:", item.path, error);
+        bufferForRetry(item);
+      });
+  }
+
+  // Submits immediately; on failure the payload is retried on the next 'online' event,
+  // visibility change back to the tab, or the periodic interval - whichever comes first.
+  function submitWithRetryBuffer(path, payload, clientId) {
+    attemptSend({ path: path, payload: payload, clientId: clientId });
+  }
+
+  function flushRetryBuffer() {
+    loadRetryBuffer().forEach(attemptSend);
+  }
+
+  window.addEventListener("online", flushRetryBuffer);
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible") flushRetryBuffer();
+  });
+  setInterval(flushRetryBuffer, RETRY_INTERVAL_MS);
+
+  /**
+   * Submits the /game record for the current session. Called from submitGameFromUnity, which
+   * Unity fires from both GameLogic.LoadGame() and LoadMapSelection() right before their existing
+   * scene-transition logic runs, passing the team-name TMP_InputField's current text.
+   * @param {string|null|undefined} teamNameRaw - raw text from the team-name field; empty/whitespace becomes null.
+   */
+  function submitGame(teamNameRaw) {
+    if (!currentSessionId) {
+      console.error("submitGame called with no active session");
+      return;
+    }
+    // No ?period= on load -> data capture is off for the whole session, silently.
+    if (!orientationPeriod) {
+      return;
+    }
+    var teamName = teamNameRaw && teamNameRaw.trim() ? teamNameRaw.trim() : null;
+    var payload = {
+      session_id: currentSessionId,
+      team_name: teamName,
+      orientation_period: orientationPeriod,
+    };
+    submitWithRetryBuffer("/game", payload, "game-" + currentSessionId);
+  }
+  window.submitGame = submitGame;
+
+  /**
+   * Called from Unity (GameLogic.LoadGame / LoadMapSelection via WebMapBridge.SubmitGame) with
+   * the team-name TMP_InputField's text read at that exact moment, right before Unity's own
+   * scene-transition logic runs.
+   * @param {string} teamName
+   */
+  function submitGameFromUnity(teamName) {
+    submitGame(teamName);
+  }
+  window.submitGameFromUnity = submitGameFromUnity;
+
   // --------------------------------------------------------------- UNITY ACTUAL LOCATION INTEGRATION
   /**
    * Receives actual location data from Unity and adds it to the map
@@ -588,6 +764,21 @@
       var lat = locationData.latitude;
       var lng = locationData.longitude;
       var zLevel = locationData.zLevel || 0;
+
+      // New session on round 1 (the Unity scene reloads on "Play Again" but this page doesn't,
+      // so round 1 is the only reliable "a new playthrough is starting" signal available here).
+      if (locationData.roundNumber === 1) {
+        currentSessionId = generateId();
+      }
+
+      // Round data assembly: fills in the location-derived fields, order-agnostic with
+      // respect to setGuessingStateFromUnity(false) (see the note by pendingRoundData's
+      // declaration - this actually fires first, but either order works here).
+      var roundData = ensurePendingRoundData();
+      roundData.session_id = currentSessionId;
+      roundData.orientation_period = orientationPeriod;
+      roundData.map_pack_id = locationData.mapPackId;
+      roundData.level_id = zLevel;
 
       console.log("Received actual location from Unity:", locationData);
 
@@ -642,6 +833,39 @@
 
   // Expose to global scope for Unity to call
   window.addActualLocationFromUnity = addActualLocationFromUnity;
+
+  // --------------------------------------------------------------- ROUND SCORE DATA (round assembly, part 2 of 2)
+  /**
+   * Called from Unity (GameLogic.OnScoreCalculated -> MapInteractionManager.SendScoreDataToJavaScript)
+   * with the round's raw distance (before distanceScale), whether the floor was correct, and the
+   * final weighted score. This is guaranteed to fire last in the per-round sequence
+   * (setGuessingStateFromUnity(false) -> addActualLocationFromUnity -> here), so pendingRoundData
+   * is complete at this point - fill in the remaining fields and submit.
+   */
+  function sendRoundScoreDataFromUnity(exactDistance, floorCorrect, score) {
+    if (!pendingRoundData) {
+      console.error("sendRoundScoreDataFromUnity fired with no pendingRoundData");
+      return;
+    }
+
+    // No ?period= on load -> data capture is off for the whole session, silently. Gameplay
+    // itself is unaffected; we just never had anything valid to tag these rows with.
+    if (!orientationPeriod) {
+      pendingRoundData = null;
+      return;
+    }
+
+    pendingRoundData.distance_metres = exactDistance;
+    pendingRoundData.floor_correct = !!floorCorrect;
+    pendingRoundData.score = score;
+
+    var clientRoundId = generateId();
+    pendingRoundData.client_round_id = clientRoundId;
+
+    submitWithRetryBuffer("/round", pendingRoundData, clientRoundId);
+    pendingRoundData = null;
+  }
+  window.sendRoundScoreDataFromUnity = sendRoundScoreDataFromUnity;
 
   // --------------------------------------------------------------- LOCATION INFO POPUP
   // Per-floor info card content, keyed by MapPack ID then zLevel.
@@ -806,6 +1030,7 @@
   window.addActualLocationFromUnity = addActualLocationFromUnity;
   window.setGuessingStateFromUnity = setGuessingStateFromUnity;
   window.clearMapStateFromUnity = clearMapStateFromUnity;
+  window.sendRoundScoreDataFromUnity = sendRoundScoreDataFromUnity;
 
   // --------------------------------------------------------------- GUESS BUTTON MANAGEMENT
   function updateGuessButtonState(hasMarker) {
@@ -884,6 +1109,17 @@
 
   function setGuessingStateFromUnity(isGuessing) {
     isGuessingState = !!isGuessing;
+
+    // Round timing: true = round just became playable, start the clock; false = guess just
+    // submitted, compute round_duration_ms and merge it into this round's data (order-agnostic
+    // with respect to addActualLocationFromUnity - see the note by pendingRoundData's declaration).
+    if (isGuessingState) {
+      roundStartTimestamp = Date.now();
+    } else if (roundStartTimestamp !== null) {
+      ensurePendingRoundData().round_duration_ms = Date.now() - roundStartTimestamp;
+      roundStartTimestamp = null;
+    }
+
     // console.log("[State] Guessing state updated:", isGuessingState);
     var button = document.getElementById("guess-button");
     if (button) {
