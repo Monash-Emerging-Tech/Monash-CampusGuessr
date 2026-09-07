@@ -17,10 +17,10 @@ public class SupabaseClient : MonoBehaviour
 
     public static SupabaseClient Instance { get; private set; }
 
-    public string AccessToken { get; private set; }
     public string UserId { get; private set; }
-    public bool IsSignedIn => !string.IsNullOrWhiteSpace(AccessToken);
+    public bool IsSignedIn => !string.IsNullOrWhiteSpace(accessToken);
 
+    private string accessToken;
     // Reused while sign in is already running so multiple callers do not create multiple anonymous users.
     private Task signInTask;
 
@@ -77,6 +77,7 @@ public class SupabaseClient : MonoBehaviour
         int score,
         float timeSeconds)
     {
+        ValidateConfig();
         await EnsureSignedInAsync();
 
         SubmitScoreRequest payload = new()
@@ -97,6 +98,7 @@ public class SupabaseClient : MonoBehaviour
     /// </summary>
     public async Task<UpdateScoreNameResponse> UpdateScoreNameAsync(long scoreEntryId, string displayName)
     {
+        ValidateConfig();
         await EnsureSignedInAsync();
 
         UpdateScoreNameRequest payload = new()
@@ -146,20 +148,10 @@ public class SupabaseClient : MonoBehaviour
 
     private async Task<string> GetJsonAsync(string url)
     {
-        ValidateConfig();
-
         using UnityWebRequest request = UnityWebRequest.Get(url);
         request.SetRequestHeader("apikey", config.PublishableKey);
 
-        await request.SendWebRequest().AsTask();
-
-        if (request.result != UnityWebRequest.Result.Success)
-        {
-            string responseBody = request.downloadHandler?.text ?? string.Empty;
-            throw new SupabaseRequestException(request.responseCode, request.error, responseBody);
-        }
-
-        return request.downloadHandler.text;
+        return await SendAsync(request);
     }
 
     private async Task SignInAnonymouslyAsync()
@@ -175,7 +167,7 @@ public class SupabaseClient : MonoBehaviour
             throw new InvalidOperationException("Supabase did not return an anonymous access token.");
         }
 
-        AccessToken = response.access_token;
+        accessToken = response.access_token;
         UserId = response.user?.id;
 
         LogDebug($"Anonymous sign-in succeeded. User ID: {UserId}");
@@ -183,8 +175,6 @@ public class SupabaseClient : MonoBehaviour
 
     private async Task<string> PostJsonAsync(string url, string json, bool includeAuth)
     {
-        ValidateConfig();
-
         using UnityWebRequest request = new(url, "POST");
         byte[] body = Encoding.UTF8.GetBytes(json);
 
@@ -195,8 +185,15 @@ public class SupabaseClient : MonoBehaviour
 
         if (includeAuth)
         {
-            request.SetRequestHeader("Authorization", $"Bearer {AccessToken}");
+            request.SetRequestHeader("Authorization", $"Bearer {accessToken}");
         }
+
+        return await SendAsync(request);
+    }
+
+    private static async Task<string> SendAsync(UnityWebRequest request)
+    {
+        request.timeout = 10;
 
         await request.SendWebRequest().AsTask();
 
