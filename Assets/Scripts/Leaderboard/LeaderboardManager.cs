@@ -10,7 +10,21 @@ using UnityEngine;
 /// </summary>
 public class LeaderboardManager : MonoBehaviour
 {
-    [SerializeField] private string leaderboardSlug = "monthly_score";
+    [Serializable]
+    private struct MapLeaderboardSlug
+    {
+        public int mapPackId;
+        public string mapSlug;
+    }
+
+    [SerializeField] private string submissionLeaderboardSlug = "monthly_score";
+
+    [SerializeField]
+    private MapLeaderboardSlug[] mapSlugs =
+    {
+        new() { mapPackId = 3, mapSlug = "clayton" },
+        new() { mapPackId = 4, mapSlug = "college" }
+    };
 
     [Header("Retry")]
     [SerializeField] private int maxSubmitAttempts = 2;
@@ -20,9 +34,12 @@ public class LeaderboardManager : MonoBehaviour
     [SerializeField] private bool enableDebugLogs = true;
 
     public static LeaderboardManager Instance { get; private set; }
+    public static event Action SubmissionStarted;
+    public static event Action<SubmitScoreResponse> SubmissionCompleted;
 
     // Stored so the breakdown scene can read the latest result even if it loads after the request finishes.
     public SubmitScoreResponse LastSubmitResponse { get; private set; }
+    public Task<SubmitScoreResponse> CurrentSubmissionTask { get; private set; }
     public bool IsSubmitting { get; private set; }
     public bool HasAttemptedSubmission { get; private set; }
     public string LastError { get; private set; }
@@ -55,6 +72,7 @@ public class LeaderboardManager : MonoBehaviour
     {
         HasAttemptedSubmission = false;
         LastSubmitResponse = null;
+        CurrentSubmissionTask = null;
         LastError = string.Empty;
     }
 
@@ -68,7 +86,7 @@ public class LeaderboardManager : MonoBehaviour
         await SubmitFinalScoreAsync(gameResult);
     }
 
-    public async Task<SubmitScoreResponse> SubmitFinalScoreAsync(GameResult gameResult)
+    public Task<SubmitScoreResponse> SubmitFinalScoreAsync(GameResult gameResult)
     {
         if (gameResult == null)
         {
@@ -77,21 +95,27 @@ public class LeaderboardManager : MonoBehaviour
 
         if (HasAttemptedSubmission || IsSubmitting)
         {
-            return LastSubmitResponse;
+            return CurrentSubmissionTask ?? Task.FromResult(LastSubmitResponse);
         }
 
         LastError = string.Empty;
         LastSubmitResponse = null;
-
         HasAttemptedSubmission = true;
         IsSubmitting = true;
 
+        CurrentSubmissionTask = SubmitFinalScoreInternalAsync(gameResult);
+        SubmissionStarted?.Invoke();
+
+        return CurrentSubmissionTask;
+    }
+
+    private async Task<SubmitScoreResponse> SubmitFinalScoreInternalAsync(GameResult gameResult)
+    {
         try
         {
             SupabaseClient client = ResolveSupabaseClient();
-            string mapSlug = ResolveMapSlug(gameResult.MapPackName);
 
-            if (string.IsNullOrWhiteSpace(mapSlug))
+            if (!TryResolveMapSlug(gameResult.MapPackId, out string mapSlug))
             {
                 throw new InvalidOperationException("Could not resolve leaderboard map slug.");
             }
@@ -99,7 +123,7 @@ public class LeaderboardManager : MonoBehaviour
             SubmitScoreResponse response = await SubmitScoreWithRetryAsync(
                 client,
                 mapSlug,
-                leaderboardSlug,
+                submissionLeaderboardSlug,
                 gameResult.FinalScore,
                 gameResult.TimeSeconds);
 
@@ -120,7 +144,49 @@ public class LeaderboardManager : MonoBehaviour
         finally
         {
             IsSubmitting = false;
+            SubmissionCompleted?.Invoke(LastSubmitResponse);
+            CurrentSubmissionTask = null;
         }
+    }
+
+    public async Task<LeaderboardTopScoreRow[]> GetTopScoresAsync(
+        string mapSlug,
+        string resolvedLeaderboardSlug,
+        int maxRows)
+    {
+        SupabaseClient client = ResolveSupabaseClient();
+        string targetLeaderboardSlug = string.IsNullOrWhiteSpace(resolvedLeaderboardSlug)
+            ? submissionLeaderboardSlug
+            : resolvedLeaderboardSlug;
+
+        return await client.GetTopScoresAsync(
+            mapSlug,
+            targetLeaderboardSlug,
+            string.Empty,
+            maxRows);
+    }
+
+    public async Task<UpdateScoreNameResponse> UpdateScoreNameAsync(
+        long scoreEntryId,
+        string displayName)
+    {
+        SupabaseClient client = ResolveSupabaseClient();
+        return await client.UpdateScoreNameAsync(scoreEntryId, displayName);
+    }
+
+    public bool TryResolveMapSlug(int mapPackId, out string mapSlug)
+    {
+        foreach (MapLeaderboardSlug entry in mapSlugs)
+        {
+            if (entry.mapPackId == mapPackId && !string.IsNullOrWhiteSpace(entry.mapSlug))
+            {
+                mapSlug = entry.mapSlug;
+                return true;
+            }
+        }
+
+        mapSlug = string.Empty;
+        return false;
     }
 
     private async Task<SubmitScoreResponse> SubmitScoreWithRetryAsync(
@@ -186,25 +252,6 @@ public class LeaderboardManager : MonoBehaviour
         }
 
         return client;
-    }
-
-    public static string ResolveMapSlug(string mapPackName)
-    {
-        string lowerName = string.IsNullOrWhiteSpace(mapPackName)
-            ? string.Empty
-            : mapPackName.ToLowerInvariant();
-
-        if (lowerName.Contains("outside living"))
-        {
-            return "clayton";
-        }
-
-        if (lowerName.Contains("college"))
-        {
-            return "college";
-        }
-
-        return string.Empty;
     }
 
     #region Debug Logging
