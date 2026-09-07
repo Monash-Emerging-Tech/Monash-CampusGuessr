@@ -42,6 +42,15 @@ mergeInto(LibraryManager.library, {
     if (typeof window.mmSetMapPackView === "function")
       window.mmSetMapPackView(campusId, lat, lng, zoom);
   },
+  sendRoundScoreDataFromUnity: function (exactDistance, floorCorrect, score) {
+    if (typeof window.sendRoundScoreDataFromUnity === "function")
+      window.sendRoundScoreDataFromUnity(exactDistance, !!floorCorrect, score);
+  },
+  submitGameFromUnity: function (teamNamePtr) {
+    var teamName = UTF8ToString(teamNamePtr);
+    if (typeof window.submitGameFromUnity === "function")
+      window.submitGameFromUnity(teamName);
+  },
   showTooltipFromWeb: function (seconds) {
     if (
       typeof window.unityInstance !== "undefined" &&

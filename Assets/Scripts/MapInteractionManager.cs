@@ -38,7 +38,7 @@ public class MapInteractionManager : MonoBehaviour
     private bool isMapActive = false;
     // Events
     public static event Action<LocationData>? OnGuessSubmitted; // Event with location data
-    public static event Action<int, int, int, bool>? OnScoreCalculated;
+    public static event Action<int, int, int, bool, float>? OnScoreCalculated;
     public static event Action? OnMapOpened;
     public static event Action? OnMapClosed;
     public static event Action<int>? OnZLevelChanged; // New z-level event
@@ -217,7 +217,7 @@ public class MapInteractionManager : MonoBehaviour
             if (currentActualLocation != null && currentGuessLocation != null)
             {
                 MapGuessScoreResult scoreResult = CalculateScore(currentActualLocation, currentGuessLocation);
-                OnScoreCalculated?.Invoke(scoreResult.Score, scoreResult.Distance, scoreResult.FloorDiff, scoreResult.TooHigh);
+                OnScoreCalculated?.Invoke(scoreResult.Score, scoreResult.Distance, scoreResult.FloorDiff, scoreResult.TooHigh, scoreResult.ExactDistance);
 
                 // Show both locations on map
                 ShowBothLocations();
@@ -240,7 +240,8 @@ public class MapInteractionManager : MonoBehaviour
     /// <param name="longitude">Longitude (y coordinate)</param>
     /// <param name="zLevel">Z-level (z coordinate)</param>
     /// <param name="mapPackId">ID of the currently active MapPack</param>
-    public void SendActualLocationToJavaScript(float latitude, float longitude, int zLevel, int mapPackId)
+    /// <param name="roundNumber">Current round number (1-based)</param>
+    public void SendActualLocationToJavaScript(float latitude, float longitude, int zLevel, int mapPackId, int roundNumber)
     {
         // Create payload data structure (same format as receiving)
         var locationPayload = new LocationPayload
@@ -249,13 +250,32 @@ public class MapInteractionManager : MonoBehaviour
             longitude = longitude,
             zLevel = zLevel,
             zLevelName = ZLevelFormatter.GetName(zLevel),
-            mapPackId = mapPackId
+            mapPackId = mapPackId,
+            roundNumber = roundNumber
         };
 
         // Serialize to JSON
         string jsonPayload = JsonUtility.ToJson(locationPayload);
 
         WebMapBridge.AddActualLocation(jsonPayload, latitude, longitude, zLevel, enableDebugLogs);
+    }
+
+    /// <summary>
+    /// Sends the round's score result to JavaScript for data-capture (distance in metres before
+    /// distanceScale is applied, whether the floor was correct, and the final weighted score).
+    /// </summary>
+    public void SendScoreDataToJavaScript(float exactDistance, bool floorCorrect, int score)
+    {
+        WebMapBridge.SendScoreData(exactDistance, floorCorrect, score, enableDebugLogs);
+    }
+
+    /// <summary>
+    /// Submits the current game's data-capture record (team name + session) to JavaScript.
+    /// Called from GameLogic.LoadGame() and LoadMapSelection() right before their scene transitions.
+    /// </summary>
+    public void SubmitGameToJavaScript(string teamName)
+    {
+        WebMapBridge.SubmitGame(teamName, enableDebugLogs);
     }
 
     /// <summary>
@@ -477,6 +497,7 @@ public class MapInteractionManager : MonoBehaviour
         public int zLevel;
         public string? zLevelName;
         public int mapPackId;
+        public int roundNumber;
     }
 
     // Location data structure with lat, lng, zLevel, zLevelName

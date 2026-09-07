@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using TMPro;
 
 public class GameResult
 {
@@ -265,6 +266,8 @@ public class GameLogic : MonoBehaviour
     /// </summary>
     public void LoadGame()
     {
+        SubmitGameData();
+
         if (TransitionManager.Instance.isActiveAndEnabled)
         {
             TransitionManager.Instance.StartCoroutine(
@@ -280,6 +283,8 @@ public class GameLogic : MonoBehaviour
     /// <summary> Loads the starting map selection scene </summary>
     public void LoadMapSelection()
     {
+        SubmitGameData();
+
         // Reset game state
         isGameActive = false;
         isRoundActive = false;
@@ -296,9 +301,33 @@ public class GameLogic : MonoBehaviour
 
 
         LogDebug("Returning to menu - game state reset");
-        
+
         // Load menu scene
         SceneManager.LoadScene("Map_selection");
+    }
+
+    /// <summary>
+    /// Reads the team-name field (if present in the current scene - only BreakdownScene has one;
+    /// mid-game "Leave Game" has none, which resolves to an empty name) and submits the game's
+    /// data-capture record to JavaScript. Called from LoadGame() and LoadMapSelection(), right
+    /// before their existing scene-transition logic runs.
+    /// </summary>
+    private void SubmitGameData()
+    {
+        if (MapInteractionManager.Instance == null) return;
+
+        string teamName = "";
+        GameObject teamNameInputObj = GameObject.Find("TeamNameInput");
+        if (teamNameInputObj != null)
+        {
+            TMP_InputField teamNameInputField = teamNameInputObj.GetComponent<TMP_InputField>();
+            if (teamNameInputField != null)
+            {
+                teamName = teamNameInputField.text;
+            }
+        }
+
+        MapInteractionManager.Instance.SubmitGameToJavaScript(teamName);
     }
 
     /// <summary>
@@ -764,7 +793,7 @@ public class GameLogic : MonoBehaviour
         if (MapInteractionManager.Instance != null && locationManager != null)
         {
             var location = locationManager.GetCurrentLocation();
-            MapInteractionManager.Instance.SendActualLocationToJavaScript(location.latitude, location.longitude, location.zLevel, resolvedMapPackId);
+            MapInteractionManager.Instance.SendActualLocationToJavaScript(location.latitude, location.longitude, location.zLevel, resolvedMapPackId, currentRound);
             MapInteractionManager.Instance.ShowBothLocations();
             MapInteractionManager.Instance.ShowMap();
             MapInteractionManager.Instance.SetWebGuessingState(false);
@@ -782,10 +811,11 @@ public class GameLogic : MonoBehaviour
     /// <param name="distance">The distance between guess and actual location</param>
     /// <param name="floorDiff">The difference in z-levels</param>
     /// <param name="tooHigh">Whether the guess was too high</param>
-    private void OnScoreCalculated(int score, int distance, int floorDiff, bool tooHigh)
+    /// <param name="exactDistance">Full-precision distance in metres, before distanceScale is applied</param>
+    private void OnScoreCalculated(int score, int distance, int floorDiff, bool tooHigh, float exactDistance)
     {
         currentScore += score;
-        
+
         LogDebug($"Score calculated: {score}, Total: {currentScore}");
 
         LogDebug($"ScoreData reference: {scoreData}");
@@ -797,6 +827,11 @@ public class GameLogic : MonoBehaviour
             scoreData.SetDistanceScore(distance);
             scoreData.SetFloorData(floorDiff, tooHigh);
             scoreData.AddScore(score);
+        }
+
+        if (MapInteractionManager.Instance != null)
+        {
+            MapInteractionManager.Instance.SendScoreDataToJavaScript(exactDistance, floorDiff == 0, score);
         }
 
         OnScoreUpdated?.Invoke(currentScore);
