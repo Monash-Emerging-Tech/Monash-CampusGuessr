@@ -5,6 +5,26 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
+public class GameResult
+{
+    public int FinalScore { get; }
+    public float TimeSeconds { get; }
+    public int CurrentRound { get; }
+    public int TotalRounds { get; }
+    public string MapPackName { get; }
+    public int MapPackId { get; }
+
+    public GameResult(int finalScore, float timeSeconds, int currentRound, int totalRounds, string mapPackName, int mapPackId)
+    {
+        FinalScore = finalScore;
+        TimeSeconds = timeSeconds;
+        CurrentRound = currentRound;
+        TotalRounds = totalRounds;
+        MapPackName = mapPackName;
+        MapPackId = mapPackId;
+    }
+}
+
 /// <summary>
 /// GameLogic, Responsible for all game logic including scoring, round management, and game state.
 /// Communicates with MapInteractionManager for map interactions.
@@ -42,6 +62,8 @@ public class GameLogic : MonoBehaviour
     private bool isGameActive = false;
     private bool isRoundActive = false;
     private bool skipNextRoundWait = false;
+    private float gameStartTime = 0f;
+    private bool finalScoreReadyRaised = false;
     private int? queuedNextLocationId = null;
     private int preloadTriggeredForRound = -1; // Tracks which round has already triggered next round preload
     private Coroutine preloadNextLocationCoroutine;
@@ -63,6 +85,8 @@ public class GameLogic : MonoBehaviour
     public static event System.Action<int> OnScoreUpdated;
     public static event System.Action<int, int> OnRoundUpdated; // currentRound, totalRounds
     public static event System.Action<string> OnMapPackChanged; // mapPackName
+    public static event System.Action OnGameStarted;
+    public static event System.Action<GameResult> OnFinalScoreReady;
 
     // Singleton pattern
     public static GameLogic Instance { get; private set; }
@@ -314,6 +338,7 @@ public class GameLogic : MonoBehaviour
         currentScore = 0;
         isGuessing = true;
         isRoundActive = false;
+        StartGameTimer();
         scoreData.ResetAll();
         preloadTriggeredForRound = -1;
 
@@ -367,6 +392,7 @@ public class GameLogic : MonoBehaviour
         currentScore = 0;
         isGameActive = true;
         inGame = true;
+        StartGameTimer();
 
         LogDebug("Game initialized");
 
@@ -390,6 +416,7 @@ public class GameLogic : MonoBehaviour
         isRoundActive = false;
         isGuessing = true;
         inGame = true;
+        StartGameTimer();
         scoreData.ResetAll();
         queuedNextLocationId = null;
         preloadTriggeredForRound = -1;
@@ -428,6 +455,34 @@ public class GameLogic : MonoBehaviour
 
         LogDebug("Game restarted");
         nextRound();
+    }
+
+    #endregion
+
+    #region Game Result
+
+    private void StartGameTimer()
+    {
+        gameStartTime = Time.realtimeSinceStartup;
+        finalScoreReadyRaised = false;
+        OnGameStarted?.Invoke();
+    }
+
+    private void RaiseFinalScoreReady()
+    {
+        if (finalScoreReadyRaised)
+        {
+            return;
+        }
+
+        finalScoreReadyRaised = true;
+        OnFinalScoreReady?.Invoke(new GameResult(
+            currentScore,
+            GetElapsedGameTimeSeconds(),
+            currentRound,
+            totalRounds,
+            mapPackName,
+            resolvedMapPackId));
     }
 
     #endregion
@@ -662,6 +717,7 @@ public class GameLogic : MonoBehaviour
             MapInteractionManager.Instance.HideMap();
         }
 
+        RaiseFinalScoreReady();
         OnGameEnded?.Invoke(currentScore);
         LogDebug($"Game ended - Final Score: {currentScore}");
 
@@ -744,6 +800,12 @@ public class GameLogic : MonoBehaviour
         }
 
         OnScoreUpdated?.Invoke(currentScore);
+
+        if (currentRound >= totalRounds)
+        {
+            RaiseFinalScoreReady();
+        }
+
         // End the round
         EndRound();
     }
@@ -800,6 +862,7 @@ public class GameLogic : MonoBehaviour
     public int GetCurrentScore() => currentScore;
     public int GetMapPackId() => resolvedMapPackId;
     public string GetMapPackName() => mapPackName;
+    public float GetElapsedGameTimeSeconds() => Mathf.Max(0f, Time.realtimeSinceStartup - gameStartTime);
     public string[] GetAllMapPackNames() => locationManager?.GetAllMapPackNames() ?? new string[0];
     public string GetMapPackNameById(int id) => locationManager?.GetMapPackNameById(id) ?? "Unknown";
     public bool IsGameActive() => isGameActive;
